@@ -1,0 +1,266 @@
+
+> site@0.1.0 dev /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs
+> next dev
+
+   ▲ Next.js 15.2.5
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.9:3000
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 2.3s
+ ○ Compiling / ...
+/*! 🌼 daisyUI 5.0.9 */
+ ✓ Compiled / in 12.4s (9373 modules)
+ GET / 200 in 13926ms
+ HEAD / 200 in 167ms
+ GET / 200 in 105ms
+ HEAD / 200 in 64ms
+ ✓ Compiled in 2.1s (9373 modules)
+ GET / 200 in 56ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 504ms
+ ✓ Compiled in 1200ms (9373 modules)
+ GET / 200 in 52ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 2.7s (9363 modules)
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 404 in 3073ms
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_coinbase_wallet-sdk_4_3_6__types_react_19_0_14_bufferuti-54ea79.js 404 in 3065ms
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 404 in 37ms
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 404 in 54ms
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 404 in 34ms
+ ✓ Compiled in 2.2s (9374 modules)
+ GET / 200 in 77ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET / 200 in 524ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 970ms (4901 modules)
+ GET /_next/static/css/app/layout.css?v=1762788447576 404 in 1265ms
+ GET /_next/static/chunks/main-app.js?v=1762788447576 404 in 296ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 85ms
+ GET /_next/static/chunks/app/not-found.js 404 in 85ms
+ GET /_next/static/chunks/app/page.js 404 in 32ms
+ ⨯ ./contracts/abis/simpleVotingAbi.ts
+Error: Failed to read source code from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/contracts/abis/simpleVotingAbi.ts
+
+Caused by:
+    No such file or directory (os error 2)
+
+Import trace for requested module:
+./contracts/abis/simpleVotingAbi.ts
+./app/components/CreateQuestion.tsx
+ ✓ Compiled in 1288ms (9374 modules)
+   Reload env: .env.local
+ ✓ Compiled in 1372ms (9360 modules)
+ ✓ Compiled in 1357ms (9374 modules)
+ ✓ Compiled in 1308ms (9374 modules)
+ ✓ Compiled in 1587ms (9374 modules)
+ ✓ Compiled in 1890ms (9374 modules)
+ ✓ Compiled in 1233ms (9374 modules)
+ ✓ Compiled in 848ms (9374 modules)
+ ✓ Compiled in 1221ms (9374 modules)
+ ✓ Compiled in 1066ms (9374 modules)
+ GET / 200 in 667ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1681ms (4901 modules)
+ GET /_next/static/chunks/main-app.js?v=1762788892943 404 in 1215ms
+ GET /_next/static/css/app/layout.css?v=1762788892943 404 in 2028ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 69ms
+ GET /_next/static/chunks/app/not-found.js 404 in 69ms
+ GET / 200 in 214ms
+ GET /_next/static/css/app/layout.css?v=1762788903112 404 in 37ms
+ GET /_next/static/chunks/app/not-found.js 404 in 86ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 93ms
+ GET /_next/static/chunks/main-app.js?v=1762788903112 404 in 103ms
+ ○ Compiling /vote ...
+ ✓ Compiled /vote in 2.6s (9370 modules)
+ GET /vote?questionId=0 200 in 2913ms
+ GET /_next/static/css/app/layout.css?v=1762788912266 404 in 63ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 78ms
+ GET /_next/static/chunks/main-app.js?v=1762788912266 404 in 79ms
+ GET /_next/static/chunks/app/not-found.js 404 in 30ms
+ GET / 200 in 142ms
+ GET /_next/static/css/app/layout.css?v=1762789000966 404 in 73ms
+ GET /_next/static/chunks/main-app.js?v=1762789000966 404 in 116ms
+ GET /_next/static/chunks/app/not-found.js 404 in 107ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 110ms
+ GET / 200 in 152ms
+ GET /_next/static/css/app/layout.css?v=1762789052219 404 in 189ms
+ GET /_next/static/chunks/main-app.js?v=1762789052219 404 in 127ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 124ms
+ GET /_next/static/chunks/app/not-found.js 404 in 124ms
+ ✓ Compiled in 2.8s (9376 modules)
+ ✓ Compiled in 3.8s (9376 modules)
+ ✓ Compiled in 1107ms (9376 modules)
+ ✓ Compiled in 1012ms (9376 modules)
+ ✓ Compiled in 1157ms (9376 modules)
+ GET / 200 in 543ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1271ms (4901 modules)
+ GET /_next/static/chunks/app/not-found.js 404 in 1555ms
+ GET /_next/static/chunks/main-app.js?v=1762789274563 404 in 1648ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 1634ms
+ ✓ Compiled in 3.3s (9379 modules)
+ ✓ Compiled in 2.6s (9379 modules)
+ GET / 200 in 672ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 96ms
+ GET /_next/static/chunks/main-app.js?v=1762789378925 404 in 104ms
+ GET /_next/static/chunks/app/not-found.js 404 in 125ms
+ ✓ Compiled in 3s (9379 modules)
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 3.6s (9693 modules)
+ GET / 404 in 4183ms
+ ○ Compiling /vote ...
+ ✓ Compiled /vote in 2.1s (4990 modules)
+ GET /vote?questionId=0 200 in 2825ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 601ms (4993 modules)
+ GET /_next/static/chunks/app/vote/page.js 404 in 927ms
+ GET /vote?questionId=1 200 in 183ms
+ GET /_next/static/chunks/app/vote/page.js 404 in 163ms
+ ✓ Compiled in 3.9s (9709 modules)
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1116ms (4993 modules)
+ GET /_next/static/webpack/949a64655d4c5158.webpack.hot-update.json 404 in 1450ms
+ GET /vote?questionId=1 404 in 1461ms
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+   Reload env: .env.local
+ ✓ Compiled in 5s (9698 modules)
+ GET /vote?questionId=1 200 in 69ms
+ ✓ Compiled in 7s (9712 modules)
+ GET /vote?questionId=1 200 in 564ms
+ HEAD /vote 404 in 2270ms
+ GET /vote?questionId=1 404 in 193ms
+ HEAD /vote 404 in 61ms
+ GET /vote?questionId=0 404 in 66ms
+ HEAD /vote 404 in 40ms
+ ✓ Compiled in 16.5s (9709 modules)
+ GET /vote?questionId=0 200 in 92ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1671ms (4993 modules)
+ GET /_next/static/webpack/a9f99497434d841c.webpack.hot-update.json 404 in 2035ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /vote?questionId=0 200 in 408ms
+ ✓ Compiled in 5.3s (9709 modules)
+ GET /vote?questionId=0 200 in 133ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/2.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/2.pack.gz'
+ ✓ Compiled in 3.4s (9709 modules)
+ GET /vote?questionId=0 200 in 207ms
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ GET /vote?questionId=0 200 in 3197ms
+   Reload env: .env.local
+ ✓ Compiled in 8s (9695 modules)
+ GET /vote?questionId=0 200 in 94ms
+   Reload env: .env.local
+ ⚠ Fast Refresh had to perform a full reload. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+ ✓ Compiled in 52s (9695 modules)
+ GET /vote?questionId=0 200 in 22244ms
+ GET /vote?questionId=0 200 in 943ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 14.3s (4993 modules)
+ ⨯ [TypeError: Cannot read properties of undefined (reading 'clientModules')]
+ ⨯ [TypeError: Cannot read properties of undefined (reading 'clientModules')]
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_coinbase_wallet-sdk_4_3_6__types_react_19_0_14_bufferuti-54ea79.js 500 in 25535ms
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 500 in 25712ms
+ ⨯ [TypeError: Cannot read properties of undefined (reading 'clientModules')]
+ GET /_next/static/chunks/_app-pages-browser_node_modules_pnpm_rainbow-me_rainbowkit_2_2_8__tanstack_react-query_5_59_2-a1ee48.js 500 in 495ms
+ ✓ Compiled in 14.2s (9695 modules)
+ GET /vote?questionId=0 200 in 5680ms
+ ✓ Compiled in 38.2s (9709 modules)
+ ✓ Compiled in 20.2s (9709 modules)
+ ✓ Compiled in 21.4s (9709 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/4.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/4.pack.gz'
+ ✓ Compiled in 38.3s (9709 modules)
+ ✓ Compiled in 28.4s (9709 modules)
+ ✓ Compiled in 53.5s (9695 modules)
+ ✓ Compiled in 3.9s (9695 modules)
+ ✓ Compiled in 16.4s (9709 modules)
+   Reload env: .env.local
+ ✓ Compiled in 14.4s (9695 modules)
+ ✓ Compiled in 25.5s (9709 modules)
+   Reload env: .env.local
+ ✓ Compiled in 1499ms (9695 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/8.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/8.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/1.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/1.pack.gz'
+ ✓ Compiled in 19.9s (9709 modules)
+ ✓ Compiled in 17.7s (9685 modules)
+ ✓ Compiled in 10.9s (9685 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/4.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/4.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/2.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/2.pack.gz'
+ ✓ Compiled in 2.4s (9699 modules)
+   Reload env: .env.local
+ ✓ Compiled in 3.5s (9685 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback.pack.gz: Error: incorrect header check
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack failed from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback.pack.gz: Error: incorrect header check
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/0.pack.gz'
+ ✓ Compiled in 24.8s (9699 modules)
+ ✓ Compiled in 3.2s (9685 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/2.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/2.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/4.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/4.pack.gz'
+ ✓ Compiled in 1431ms (4714 modules)
+ ✓ Compiled in 1937ms (4714 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 7.6s (9699 modules)
+ ✓ Compiled in 1856ms (4714 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development-fallback/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 12.6s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 25.4s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 19.1s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 19.2s (9727 modules)
+ ✓ Compiled in 6.3s (9727 modules)
+ ✓ Compiled in 3.9s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+ ✓ Compiled in 11.3s (9727 modules)
+ ✓ Compiled in 3.6s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 7.7s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 12s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 8.8s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/0.pack.gz'
+ ✓ Compiled in 4.6s (9727 modules)
+ ✓ Compiled in 2.5s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development/0.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 12.6s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 27.3s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 45.7s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 100.5s (9727 modules)
+ ✓ Compiled in 17s (9727 modules)
+ ✓ Compiled in 55.4s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/server-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 78.4s (9727 modules)
+ ✓ Compiled in 19s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/1.pack.gz_' -> '/Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development/1.pack.gz'
+ ✓ Compiled in 17.7s (9727 modules)
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 41.9s (9727 modules)
+ ✓ Compiled in 24.4s (9727 modules)
+   Reload env: .env.local
+<w> [webpack.cache.PackFileCacheStrategy] Restoring pack from /Users/khash/Downloads/fhevm-react-template-main/packages/nextjs/.next/cache/webpack/client-development.pack.gz failed: TypeError: Cannot read properties of undefined (reading 'hasStartTime')
+ ✓ Compiled in 23.7s (9713 modules)
+   Reload env: .env.local
+ ✓ Compiled in 36.3s (9713 modules)
+ ✓ Compiled in 10.4s (9727 modules)
+ GET / 200 in 7930ms
+ HEAD / 200 in 202ms
+[?25h

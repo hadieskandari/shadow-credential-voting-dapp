@@ -1,0 +1,455 @@
+"use client";
+
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { Box, Button, Text } from "@radix-ui/themes";
+import { useAccount } from "wagmi";
+import { useVoting, type Question } from "../hooks/useVoting";
+import ShareButtons from "./ShareButtons";
+import VoteStats from "./VoteStats";
+import { notification } from "../../utils/helper/notification";
+
+interface VotingProps {
+  questionId: number;
+  primary?: boolean;
+}
+
+export const Voting = ({ questionId, primary = true }: VotingProps) => {
+  const { address, isConnected } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { getQuestion, vote, hasVoted, openResults, publishResults, fheStatus } = useVoting();
+
+  const [loading, setLoading] = useState(false);
+  const [userHasVoted, setUserHasVoted] = useState(false);
+  const [votedFor, setVotedFor] = useState<number | null>(null);
+  const [error, setError] = useState<string>("");
+  const [questionData, setQuestionData] = useState<Question | null>(null);
+  const [revealLoading, setRevealLoading] = useState(false);
+  const [publishLoading, setPublishLoading] = useState(false);
+
+  const refreshQuestion = useCallback(async () => {
+    if (!questionId && questionId !== 0) return;
+    const details = await getQuestion(questionId);
+    setQuestionData(details);
+    if (address) {
+      const voted = await hasVoted(questionId, address);
+      setUserHasVoted(voted);
+      if (!voted) {
+        setVotedFor(null);
+      }
+    }
+  }, [address, getQuestion, hasVoted, questionId]);
+
+  useEffect(() => {
+    refreshQuestion();
+    const interval = setInterval(() => {
+      refreshQuestion();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [refreshQuestion]);
+
+  useEffect(() => {
+    if (!address) {
+      setUserHasVoted(false);
+      setVotedFor(null);
+    }
+  }, [address]);
+
+  const handleVote = async (answerIndex: number) => {
+    if (!isConnected) {
+      notification.info("Connect your wallet to submit a vote.");
+      openConnectModal?.();
+      return;
+    }
+    const loadingToast = notification.loading("Submitting encrypted vote…");
+    setLoading(true);
+    setError("");
+    try {
+      await vote(questionId, answerIndex);
+      setVotedFor(answerIndex);
+      setUserHasVoted(true);
+      notification.success("Vote recorded privately.");
+      await refreshQuestion();
+    } catch (err) {
+      console.error("Error voting", err);
+      setError(err instanceof Error ? err.message : "Failed to vote. Please try again.");
+      notification.error(err instanceof Error ? err.message : "Failed to vote. Please try again.");
+    } finally {
+      if (loadingToast) {
+        notification.remove(loadingToast);
+      }
+      setLoading(false);
+    }
+  };
+
+  const fallbackImage = "/shadow-logo.png";
+
+  if (!questionData) {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-black/40 px-6 py-12 text-center text-white/70">
+        Loading Poll . . .
+      </div>
+    );
+  }
+
+  const deadlinePassed = questionData ? Date.now() / 1000 >= questionData.deadline : false;
+  const decryptedTallies = questionData?.decryptedTally ?? [0, 0];
+  const totalVotes = decryptedTallies[0] + decryptedTallies[1];
+  const showTallies = Boolean(questionData?.resultsFinalized);
+  const canPublishResults = Boolean(questionData?.resultsOpened && !questionData?.resultsFinalized);
+  const isPrivatePoll = questionData.question.startsWith("🔒");
+
+  const handleShare = (platform: "x" | "farcaster") => () => {
+    if (typeof window === "undefined") return;
+    const voteUrl = `${window.location.origin}/vote?questionId=${questionId}`;
+    const prompt = questionData.question.replace("🔒 ", "");
+    if (platform === "x") {
+      const link = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        `Vote on "${prompt}" and keep your choice private`,
+      )}&url=${encodeURIComponent(voteUrl)}`;
+      window.open(link, "_blank");
+    } else {
+      const link = `https://warpcast.com/~/compose?text=${encodeURIComponent(
+        `Vote on "${prompt}" ➜ ${voteUrl}`,
+      )}`;
+      window.open(link, "_blank");
+    }
+  };
+
+  const wrapperClass = primary
+    ? "rounded-[30px] bg-gradient-to-br from-[#0b0b0b]/96 via-[#0a0a0a]/94 to-[#080808]/92 border border-white/10 shadow-[0_22px_45px_rgba(0,0,0,0.6)] p-4 md:p-5 transition duration-500 hover:border-white/20"
+    : "rounded-[28px] bg-gradient-to-br from-[#0b0b0b]/94 to-[#090909]/90 border border-white/10 p-4 transition duration-500 hover:border-white/20";
+
+  const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
+  const featureImage = questionData?.image?.trim() ? questionData.image : fallbackImage;
+  const creatorAvatar = questionData?.image?.trim()
+    ? questionData.image
+    : "/shadow-logo.png";
+
+  const ActionButton = ({
+    children,
+    variant = "ghost",
+    disabled,
+    onClick
+  }: {
+    children: ReactNode;
+    variant?: "ghost" | "primary";
+    disabled: boolean;
+    onClick?: () => void;
+  }) => {
+    const base =
+      "w-full rounded-2xl px-4 py-2 text-xs font-semibold uppercase tracking-[0.25em] transition-all duration-300 flex items-center justify-center";
+    const enabled =
+      variant === "primary"
+        ? "bg-gradient-to-r from-[#ffd208] to-[#ffb347] text-black shadow-[0_10px_30px_rgba(255,210,8,0.25)] hover:shadow-[0_12px_40px_rgba(255,210,8,0.35)]"
+        : "border border-white/15 text-white hover:border-white/40";
+    const disabledStyles = "opacity-40 cursor-not-allowed border border-white/10 text-gray-500";
+    return (
+      <button className={`${base} ${disabled ? disabledStyles : enabled}`} disabled={disabled} onClick={disabled ? undefined : onClick}>
+        {children}
+      </button>
+    );
+  };
+
+  const getShareUrl = () =>
+    typeof window !== "undefined" ? `${window.location.origin}/vote?questionId=${questionId}` : "";
+
+  const handleCopyLink = () => {
+    const url = getShareUrl();
+    if (!url) return;
+    navigator.clipboard
+      ?.writeText(url)
+      .then(() => notification.success("Poll link copied"))
+      .catch(() => notification.error("Unable to copy link"));
+  };
+
+  const cardBody = (
+    <div
+      className={`${wrapperClass} relative overflow-hidden flex flex-col gap-4`}
+      style={{ backdropFilter: "blur(16px)" }}
+    >
+      <div
+        className="absolute inset-0 pointer-events-none opacity-30"
+        style={{
+          background:
+            "radial-gradient(circle at 20% -10%, rgba(255,255,255,0.08), transparent 42%), radial-gradient(circle at 75% 20%, rgba(255,255,255,0.05), transparent 38%)",
+        }}
+      />
+
+      <div className="relative flex flex-col gap-6">
+        <div className="relative flex items-start gap-4 pr-[9.5rem]">
+          <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+            <img
+              src={featureImage}
+              alt="topic"
+              className="h-full w-full object-cover"
+              onError={e => {
+                if (e.currentTarget.src.endsWith("shadow-logo.png")) return;
+                e.currentTarget.src = "/shadow-logo.png";
+              }}
+            />
+          </div>
+          <div className="flex-1 min-w-0 space-y-2.5">
+            <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-300">
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 uppercase tracking-[0.3em] flex items-center gap-1">
+                {isPrivatePoll ? (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 11h18" />
+                      <path d="M5 11V7a7 7 0 0 1 14 0v4" />
+                      <rect width="18" height="11" x="3" y="11" rx="2" />
+                    </svg>
+                    Private
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="2" y1="12" x2="22" y2="12" />
+                      <path d="M12 2a15.3 15.3 0 0 1 0 20" />
+                      <path d="M12 2a15.3 15.3 0 0 0 0 20" />
+                    </svg>
+                    Public
+                  </>
+                )}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 uppercase tracking-[0.3em] text-gray-200">
+                #{questionId}
+              </span>
+              <span className="px-3 py-1 rounded-full bg-[#ffd208]/10 text-[#ffd208] border border-[#ffd208]/40">
+                Confidential
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-medium text-emerald-200 shadow-[0_8px_24px_rgba(16,185,129,0.25)]">
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" /> Active
+              </span>
+            </div>
+            <Text size="6" weight="bold" className="mt-1 leading-tight break-words max-w-[calc(100%-1rem)]">
+              {displayQuestion}
+            </Text>
+            <p className="text-base text-gray-200">{questionData.possibleAnswers.join(" · ")}</p>
+          </div>
+          <div className="absolute top-2 right-2 flex items-center gap-2">
+            {!isPrivatePoll ? (
+              <ShareButtons onShareX={handleShare("x")} onShareFarcaster={handleShare("farcaster")} />
+            ) : (
+              <ShareButtons onCopy={handleCopyLink} />
+            )}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div className="flex flex-col gap-1">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Deadline</p>
+            <p className="text-sm text-white/90">{new Date(questionData.deadline * 1000).toLocaleString()}</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Votes</p>
+            <p className="text-lg font-semibold text-white">{totalVotes || (questionData.resultsOpened ? "Decrypt" : "—")}</p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Status</p>
+            <p className={`text-sm ${questionData.resultsFinalized ? "text-emerald-300" : "text-amber-200"}`}>
+              {questionData.resultsFinalized ? "Published" : questionData.resultsOpened ? "Awaiting publish" : deadlinePassed ? "Ended" : "Live"}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 rounded-2xl bg-white/5 border border-white/10 px-4 py-3">
+          <div className="h-11 w-11 rounded-xl bg-white/5 border border-white/10 overflow-hidden flex items-center justify-center">
+            <img
+              src={creatorAvatar || "/shadow-logo.png"}
+              alt="creator avatar"
+              className="h-full w-full object-cover"
+              onError={e => {
+                if (e.currentTarget.src.endsWith("shadow-logo.png")) return;
+                e.currentTarget.src = "/shadow-logo.png";
+              }}
+            />
+          </div>
+          <Box>
+            <Text size="2" color="gray">
+              Created by
+            </Text>
+            <Text size="3" weight="bold">
+              {questionData.createdBy.slice(0, 6)}...{questionData.createdBy.slice(-4)}
+            </Text>
+          </Box>
+        </div>
+
+        <div className="rounded-2xl bg-white/[0.04] border border-white/10 p-5 space-y-3">
+          <p className="text-sm text-gray-300">
+            {questionData.resultsFinalized
+              ? "Tallies published on-chain."
+              : questionData.resultsOpened
+                ? "Tallies decrypted — publish to reveal clear counts."
+                : `Votes remain encrypted until ${new Date(questionData.deadline * 1000).toLocaleString()}.`}
+          </p>
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            {questionData.possibleAnswers.map((ans, idx) => {
+              const votes = decryptedTallies[idx] ?? 0;
+              const percent = showTallies && totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+              return (
+                <div key={`${ans}-${idx}`} className="rounded-xl border border-white/10 bg-black/30 p-3.5 space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-400">
+                    <span className="font-medium text-white/85">{ans}</span>
+                    <span>
+                      {showTallies
+                        ? `${votes} vote${votes === 1 ? "" : "s"}${totalVotes ? ` (${percent}%)` : ""}`
+                        : questionData.resultsOpened
+                          ? "decrypt & publish"
+                          : "encrypted"}
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-black/40 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[#ffd208] via-white to-white/80 transition-all duration-300"
+                      style={{
+                        width: showTallies
+                          ? totalVotes === 0
+                            ? "0%"
+                            : `${percent}%`
+                          : "100%",
+                        opacity: showTallies ? 1 : 0.25,
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {!isConnected ? (
+            <Button onClick={() => openConnectModal?.()} size="3" className="w-full bg-[#ffd208] text-black font-semibold">
+              Connect wallet to vote
+            </Button>
+          ) : deadlinePassed ? (
+            <div className="flex flex-col gap-2 text-center text-gray-400 bg-white/5 border border-white/10 rounded-2xl px-4 py-6">
+              <Text size="3" weight="bold">
+                Poll closed
+              </Text>
+              <Text size="2">Deadline passed; encrypted tally will be revealed once published on-chain.</Text>
+            </div>
+          ) : !userHasVoted ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {questionData.possibleAnswers.map((ans, idx) => (
+                <button
+                  key={ans}
+                  onClick={() => handleVote(idx)}
+                  disabled={loading}
+                  className={`rounded-2xl border px-6 py-4 text-lg font-semibold tracking-wide transition-all ${
+                    votedFor === idx
+                      ? "bg-[#ffd208]/20 border-[#ffd208]/50 text-white shadow-[0_12px_30px_rgba(255,210,8,0.25)]"
+                      : "bg-[#111]/60 border-white/10 text-white hover:border-white/40 hover:bg-[#111]/80"
+                  }`}
+                >
+                  {ans}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3 text-center rounded-2xl bg-white/5 border border-white/10 px-4 py-4">
+              <Text size="3" color="green" weight="bold">
+                ✓ Encrypted vote recorded
+                {typeof votedFor === "number" ? ` for ${questionData.possibleAnswers[votedFor]}` : ""}
+              </Text>
+              <Text size="2" color="gray">
+                Votes cannot be changed once submitted to preserve secrecy.
+              </Text>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <ActionButton
+              disabled={!deadlinePassed || questionData.resultsOpened || revealLoading}
+              onClick={async () => {
+                if (!deadlinePassed || questionData.resultsOpened) return;
+                let toastId: string | undefined;
+                try {
+                  toastId = notification.loading("Requesting tally reveal…") ?? undefined;
+                  setRevealLoading(true);
+                  await openResults(questionId);
+                  await refreshQuestion();
+                  notification.success("Encrypted tally reveal requested.");
+                } catch (err) {
+                  console.error("Failed to open results", err);
+                  notification.error("Failed to reveal encrypted tally.");
+                } finally {
+                  setRevealLoading(false);
+                  if (toastId) {
+                    notification.remove(toastId);
+                  }
+                }
+              }}
+            >
+              {revealLoading ? "Publishing…" : "Reveal encrypted tally"}
+            </ActionButton>
+            <ActionButton
+              variant="primary"
+              disabled={!canPublishResults || publishLoading}
+              onClick={async () => {
+                if (!canPublishResults) return;
+                let toastId: string | undefined;
+                try {
+                  toastId = notification.loading("Publishing clear tally…") ?? undefined;
+                  setPublishLoading(true);
+                  await publishResults(questionId);
+                  await refreshQuestion();
+                  notification.success("Clear tally published on-chain.");
+                } catch (err) {
+                  console.error("Failed to publish results", err);
+                  setError(err instanceof Error ? err.message : "Failed to publish results.");
+                  notification.error(err instanceof Error ? err.message : "Failed to publish results.");
+                } finally {
+                  setPublishLoading(false);
+                  if (toastId) {
+                    notification.remove(toastId);
+                  }
+                }
+              }}
+            >
+              {publishLoading ? "Submitting…" : "Publish clear tally"}
+            </ActionButton>
+          </div>
+        </div>
+
+        {error && (
+          <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+            {error}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  if (primary) {
+    return (
+      <div className="w-full px-4 my-8 flex justify-center">
+        <div className="w-full max-w-6xl">
+          <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+            <Box className="w-full">{cardBody}</Box>
+            <VoteStats
+              questionId={questionId}
+              question={questionData}
+              account={address}
+              chainId={undefined}
+              hasVoted={userHasVoted}
+              votedFor={votedFor}
+              fheStatus={fheStatus}
+              isConnected={isConnected}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full">
+      <Box className="w-full h-full">{cardBody}</Box>
+    </div>
+  );
+};
+
+export default Voting;
