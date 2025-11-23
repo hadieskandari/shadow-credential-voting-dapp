@@ -130,7 +130,7 @@ export const useFHECounterWagmi = (parameters: {
   const { encryptWith } = useFHEEncryption({
     instance,
     ethersSigner: ethersSigner as any,
-    contractAddress: fheCounter?.address,
+    contractAddress: hasContract ? (fheCounter!.address as any) : undefined,
   });
   const canUpdateCounter = useMemo(
     () => Boolean(hasContract && instance && hasSigner && !isProcessing),
