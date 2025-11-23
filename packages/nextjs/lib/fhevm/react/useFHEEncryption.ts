@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import type { ethers } from "ethers";
-import { RelayerEncryptedInput } from "@zama-fhe/relayer-sdk/web";
 import type { FhevmInstance } from "../fhevmTypes";
+import { RelayerEncryptedInput } from "@zama-fhe/relayer-sdk/web";
+import type { ethers } from "ethers";
 
 export type EncryptResult = {
   handles: Uint8Array[];

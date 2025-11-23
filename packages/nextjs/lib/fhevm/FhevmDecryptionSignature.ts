@@ -1,6 +1,6 @@
-import { ethers } from "ethers";
-import type { GenericStringStorage } from "./storage";
 import type { EIP712Type, FhevmDecryptionSignatureType, FhevmInstance } from "./fhevmTypes";
+import type { GenericStringStorage } from "./storage";
+import { ethers } from "ethers";
 
 function now(): number {
   return Math.floor(Date.now() / 1000);

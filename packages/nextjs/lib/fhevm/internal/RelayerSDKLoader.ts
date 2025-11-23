@@ -1,7 +1,7 @@
 import { SDK_CDN_URL } from "./constants";
 import type { FhevmRelayerSDKType, FhevmWindowType } from "./fhevmTypes";
 
- type Trace = (message?: unknown, ...optionalParams: unknown[]) => void;
+type Trace = (message?: unknown, ...optionalParams: unknown[]) => void;
 
 export class RelayerSDKLoader {
   private trace?: Trace;

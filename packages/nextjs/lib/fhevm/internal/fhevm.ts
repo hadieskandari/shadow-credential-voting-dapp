@@ -1,8 +1,8 @@
-import { Eip1193Provider, JsonRpcProvider, isAddress } from "ethers";
+import type { FhevmInstance, FhevmInstanceConfig } from "../fhevmTypes";
 import { publicKeyStorageGet, publicKeyStorageSet } from "./PublicKeyStorage";
 import { RelayerSDKLoader, isFhevmWindowType } from "./RelayerSDKLoader";
-import type { FhevmInstance, FhevmInstanceConfig } from "../fhevmTypes";
 import type { FhevmInitSDKOptions, FhevmLoadSDKType, FhevmRelayerSDKType, FhevmWindowType } from "./fhevmTypes";
+import { Eip1193Provider, JsonRpcProvider, isAddress } from "ethers";
 
 export class FhevmReactError extends Error {
   code: string;
@@ -81,7 +81,9 @@ async function getWeb3Client(rpcUrl: string) {
 
 async function tryFetchFHEVMHardhatNodeRelayerMetadata(
   rpcUrl: string,
-): Promise<{ ACLAddress: `0x${string}`; InputVerifierAddress: `0x${string}`; KMSVerifierAddress: `0x${string}` } | undefined> {
+): Promise<
+  { ACLAddress: `0x${string}`; InputVerifierAddress: `0x${string}`; KMSVerifierAddress: `0x${string}` } | undefined
+> {
   const version = await getWeb3Client(rpcUrl);
   if (typeof version !== "string" || !version.toLowerCase().includes("hardhat")) {
     return undefined;
@@ -91,7 +93,9 @@ async function tryFetchFHEVMHardhatNodeRelayerMetadata(
     if (!metadata || typeof metadata !== "object") {
       return undefined;
     }
-    if (!("ACLAddress" in metadata && typeof metadata.ACLAddress === "string" && metadata.ACLAddress.startsWith("0x"))) {
+    if (
+      !("ACLAddress" in metadata && typeof metadata.ACLAddress === "string" && metadata.ACLAddress.startsWith("0x"))
+    ) {
       return undefined;
     }
     if (
@@ -104,7 +108,11 @@ async function tryFetchFHEVMHardhatNodeRelayerMetadata(
       return undefined;
     }
     if (
-      !("KMSVerifierAddress" in metadata && typeof metadata.KMSVerifierAddress === "string" && metadata.KMSVerifierAddress.startsWith("0x"))
+      !(
+        "KMSVerifierAddress" in metadata &&
+        typeof metadata.KMSVerifierAddress === "string" &&
+        metadata.KMSVerifierAddress.startsWith("0x")
+      )
     ) {
       return undefined;
     }
@@ -134,7 +142,10 @@ type MockResolveResult = { isMock: true; chainId: number; rpcUrl: string };
 type GenericResolveResult = { isMock: false; chainId: number; rpcUrl?: string };
 type ResolveResult = MockResolveResult | GenericResolveResult;
 
-async function resolve(providerOrUrl: Eip1193Provider | string, mockChains?: Record<number, string>): Promise<ResolveResult> {
+async function resolve(
+  providerOrUrl: Eip1193Provider | string,
+  mockChains?: Record<number, string>,
+): Promise<ResolveResult> {
   const chainId = await getChainId(providerOrUrl);
   let rpcUrl = typeof providerOrUrl === "string" ? providerOrUrl : undefined;
 

@@ -22,8 +22,7 @@ if (!rawAlchemyKey) {
 }
 
 const preferredChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? chains.sepolia.id);
-const preferredChain =
-  preferredChainId === chains.hardhat.id ? chains.hardhat : chains.sepolia;
+const preferredChain = preferredChainId === chains.hardhat.id ? chains.hardhat : chains.sepolia;
 
 const scaffoldConfig = {
   // The networks on which your DApp is live (avoid including hardhat when not in use to prevent failing RPC polls)

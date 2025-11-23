@@ -1,7 +1,7 @@
 "use client";
 
-import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { CardNav, CardNavItem } from "./CardNav";
+import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 
 const navItems: CardNavItem[] = [
   {

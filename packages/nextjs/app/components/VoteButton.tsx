@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@radix-ui/themes";
 import { ReactNode } from "react";
+import { Button } from "@radix-ui/themes";
 
 interface VoteButtonProps {
   children: ReactNode;

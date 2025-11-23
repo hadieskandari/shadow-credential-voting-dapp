@@ -1,13 +1,14 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element */
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAccount, usePublicClient } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useVoting } from "../hooks/useVoting";
-import { simpleVotingAbi } from "~~/contracts/abis/simpleVotingAbi";
-import { Input } from "@/components/ui/input";
 import { GlowButton } from "@/components/ui/glow-button";
+import { Input } from "@/components/ui/input";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { CalendarClock, Clock3, Copy, Link2, Share2 } from "lucide-react";
+import { useAccount, usePublicClient } from "wagmi";
+import { simpleVotingAbi } from "~~/contracts/abis/simpleVotingAbi";
 import { notification } from "~~/utils/helper/notification";
 
 interface QuestionSummary {
@@ -102,10 +103,7 @@ export const CreateQuestion = () => {
     }
   }, [fetchUserQuestions]);
 
-  const sortedUserQuestions = useMemo(
-    () => [...userQuestions].sort((a, b) => b.id - a.id),
-    [userQuestions],
-  );
+  const sortedUserQuestions = useMemo(() => [...userQuestions].sort((a, b) => b.id - a.id), [userQuestions]);
   const visibleQuestions = useMemo(
     () => sortedUserQuestions.slice(0, visibleCount),
     [sortedUserQuestions, visibleCount],
@@ -172,8 +170,7 @@ export const CreateQuestion = () => {
       }
 
       const metadataImage = image || pickFallbackImage(Date.now());
-      const questionPayload =
-        pollType === "public" ? question : `🔒 ${question}`;
+      const questionPayload = pollType === "public" ? question : `🔒 ${question}`;
 
       toastId = notification.loading("Encrypting and submitting your vote…");
       const hash = await createQuestion(questionPayload, answer1, answer2, metadataImage, deadline);
@@ -249,7 +246,8 @@ export const CreateQuestion = () => {
               in seconds
             </h2>
             <p className="mx-auto max-w-3xl text-base text-gray-300 md:text-lg">
-              Define your prompt, curate two answers, and let the relayer + ACL automation keep tallies private until the deadline.
+              Define your prompt, curate two answers, and let the relayer + ACL automation keep tallies private until
+              the deadline.
             </p>
           </header>
 
@@ -325,23 +323,26 @@ export const CreateQuestion = () => {
               </div>
 
               <div className="grid gap-6 md:grid-cols-2">
-                {[{ label: "Answer A", value: answer1, setter: setAnswer1 }, { label: "Answer B", value: answer2, setter: setAnswer2 }].map(
-                  ({ label, value, setter }) => (
-                    <label key={label} className="space-y-2">
-                      <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">{label}</span>
-                      <Input
-                        value={value}
-                        onChange={event => setter(event.target.value)}
-                        placeholder={label === "Answer A" ? "Yes" : "No"}
-                        required
-                      />
-                    </label>
-                  ),
-                )}
+                {[
+                  { label: "Answer A", value: answer1, setter: setAnswer1 },
+                  { label: "Answer B", value: answer2, setter: setAnswer2 },
+                ].map(({ label, value, setter }) => (
+                  <label key={label} className="space-y-2">
+                    <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">{label}</span>
+                    <Input
+                      value={value}
+                      onChange={event => setter(event.target.value)}
+                      placeholder={label === "Answer A" ? "Yes" : "No"}
+                      required
+                    />
+                  </label>
+                ))}
               </div>
 
               <label className="space-y-2">
-                <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">Image URL (optional)</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">
+                  Image URL (optional)
+                </span>
                 <Input
                   type="url"
                   placeholder="https://"
@@ -397,7 +398,9 @@ export const CreateQuestion = () => {
                   const status = renderStatusPill(entry);
                   const link = `${shareBase}/vote?questionId=${entry.id}`;
                   const cover = entry.image || pickFallbackImage(index);
-                  const deadlineLabel = entry.deadline ? new Date(entry.deadline * 1000).toLocaleString() : "No deadline";
+                  const deadlineLabel = entry.deadline
+                    ? new Date(entry.deadline * 1000).toLocaleString()
+                    : "No deadline";
 
                   return (
                     <article
@@ -423,7 +426,9 @@ export const CreateQuestion = () => {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3">
-                          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status.className}`}>{status.label}</span>
+                          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status.className}`}>
+                            {status.label}
+                          </span>
                           <span className="flex items-center gap-2 text-xs text-gray-300">
                             <Link2 className="h-3.5 w-3.5 text-[#ffd208]" />
                             <span className="max-w-[190px] truncate">{link}</span>

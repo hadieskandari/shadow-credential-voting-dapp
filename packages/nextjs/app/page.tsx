@@ -1,9 +1,9 @@
-import { Theme } from "@radix-ui/themes";
+import Link from "next/link";
 import CreateQuestion from "./components/CreateQuestion";
 import Events from "./components/Events";
 import { GlobalPolyfill } from "./components/GlobalPolyfill";
 import Navbar from "./components/Navbar";
-import Link from "next/link";
+import { Theme } from "@radix-ui/themes";
 
 export default function Home() {
   return (

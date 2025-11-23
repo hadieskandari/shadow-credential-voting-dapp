@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { Box, Flex, Text } from "@radix-ui/themes";
 import type { Question } from "../hooks/useVoting";
+import { Box, Flex, Text } from "@radix-ui/themes";
 
 interface VoteStatsProps {
   questionId: number;
@@ -61,6 +61,14 @@ export const VoteStats = ({
   }, [question]);
 
   const encryptedHandles = question?.encryptedTally ?? [];
+  const totalVotes = question ? question.decryptedTally[0] + question.decryptedTally[1] : 0;
+  const statusLabel = useMemo(() => {
+    if (!question) return "—";
+    if (question.resultsFinalized) return "Published";
+    if (totalVotes === 0 && Date.now() / 1000 >= question.deadline) return "No Votes Submitted";
+    if (question.resultsOpened) return "Awaiting Publish";
+    return Date.now() / 1000 >= question.deadline ? "Ended" : "Live";
+  }, [question, totalVotes]);
   const voteSummary = useMemo(() => {
     if (!isConnected) return "Wallet Not Connected";
     if (!hasVoted) return "Not Submitted";
@@ -79,7 +87,7 @@ export const VoteStats = ({
         <Text size="4" weight="bold">
           Diagnostics
         </Text>
-        <br/>
+        <br />
         <Text size="2" color="gray">
           Zama FHE keeps ballots opaque; decrypt only when you choose to publish.
         </Text>
@@ -132,12 +140,16 @@ export const VoteStats = ({
           <Text size="2" weight="medium">
             Question #{questionId}
           </Text>
-          <span className="text-xs px-2 py-1 rounded-full bg-[#ffd208]/15 text-[#ffd208]">
-            {question?.resultsFinalized
-              ? "Decrypted"
-              : question?.resultsOpened
-                ? "Awaiting Publish"
-                : "Encrypted"}
+          <span
+            className={`text-xs px-2 py-1 rounded-full ${
+              statusLabel === "Published"
+                ? "bg-emerald-400/20 text-emerald-300"
+                : statusLabel === "No Votes Submitted"
+                  ? "bg-rose-400/20 text-rose-200"
+                  : "bg-[#ffd208]/15 text-[#ffd208]"
+            }`}
+          >
+            {statusLabel}
           </span>
         </Flex>
         <StatRow label="Deadline" value={question ? new Date(question.deadline * 1000).toLocaleString() : "—"} />

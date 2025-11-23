@@ -1,15 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ethers } from "ethers";
 import type { FhevmInstance } from "../fhevmTypes";
 import { createFhevmInstance } from "../internal/fhevm";
+import type { ethers } from "ethers";
 
 type FhevmStatus = "idle" | "loading" | "ready" | "error";
 
 export function useFhevm(parameters: {
   provider: string | ethers.Eip1193Provider | undefined;
-  chainId: number | undefined;
+  chainId?: number;
   enabled?: boolean;
   initialMockChains?: Readonly<Record<number, string>>;
 }): {
@@ -18,7 +18,7 @@ export function useFhevm(parameters: {
   error: Error | undefined;
   status: FhevmStatus;
 } {
-  const { provider, chainId, initialMockChains, enabled = true } = parameters;
+  const { provider, initialMockChains, enabled = true } = parameters;
 
   const [instance, setInstance] = useState<FhevmInstance | undefined>(undefined);
   const [status, setStatus] = useState<FhevmStatus>("idle");

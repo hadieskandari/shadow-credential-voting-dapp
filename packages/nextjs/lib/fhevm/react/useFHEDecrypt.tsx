@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { ethers } from "ethers";
 import { FhevmDecryptionSignature } from "../FhevmDecryptionSignature";
-import type { GenericStringStorage } from "../storage";
 import type { FhevmInstance } from "../fhevmTypes";
+import type { GenericStringStorage } from "../storage";
+import type { ethers } from "ethers";
 
 export type FHEDecryptRequest = { handle: string; contractAddress: `0x${string}` };
 
@@ -27,7 +27,9 @@ export const useFHEDecrypt = (params: {
 
   const requestsKey = useMemo(() => {
     if (!requests || requests.length === 0) return "";
-    const sorted = [...requests].sort((a, b) => (a.handle + a.contractAddress).localeCompare(b.handle + b.contractAddress));
+    const sorted = [...requests].sort((a, b) =>
+      (a.handle + a.contractAddress).localeCompare(b.handle + b.contractAddress),
+    );
     return JSON.stringify(sorted);
   }, [requests]);
 
@@ -96,7 +98,8 @@ export const useFHEDecrypt = (params: {
         } catch (e) {
           const err = e as unknown as { name?: string; message?: string };
           const code = err && typeof err === "object" && "name" in (err as any) ? (err as any).name : "DECRYPT_ERROR";
-          const msg = err && typeof err === "object" && "message" in (err as any) ? (err as any).message : "Decryption failed";
+          const msg =
+            err && typeof err === "object" && "message" in (err as any) ? (err as any).message : "Decryption failed";
           setError(`${code}: ${msg}`);
           setMessage("FHEVM userDecrypt failed");
           return;
@@ -113,7 +116,8 @@ export const useFHEDecrypt = (params: {
       } catch (e) {
         const err = e as unknown as { name?: string; message?: string };
         const code = err && typeof err === "object" && "name" in (err as any) ? (err as any).name : "UNKNOWN_ERROR";
-        const msg = err && typeof err === "object" && "message" in (err as any) ? (err as any).message : "Unknown error";
+        const msg =
+          err && typeof err === "object" && "message" in (err as any) ? (err as any).message : "Unknown error";
         setError(`${code}: ${msg}`);
         setMessage("FHEVM decryption errored");
       } finally {

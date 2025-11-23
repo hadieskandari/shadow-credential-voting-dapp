@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card, Flex, Text, Theme } from "@radix-ui/themes";
+import { GlobalPolyfill } from "../components/GlobalPolyfill";
 import Navbar from "../components/Navbar";
 import Voting from "../components/Voting";
-import { GlobalPolyfill } from "../components/GlobalPolyfill";
+import { Card, Text, Theme } from "@radix-ui/themes";
 
 const VotePage = () => {
   const [questionId, setQuestionId] = useState<number | null>(null);
@@ -77,7 +77,8 @@ const VotePage = () => {
                   Cast privately; reveal tallies with on-chain proofs only when you choose
                 </h1>
                 <p className="text-sm sm:text-base text-gray-200 max-w-2xl leading-relaxed">
-                  Ballots encrypt in-browser with Zama’s FHE runtime. Votes stay opaque end-to-end; only after reveal do tallies decrypt with proofs and anchor on-chain.
+                  Ballots encrypt in-browser with Zama’s FHE runtime. Votes stay opaque end-to-end; only after reveal do
+                  tallies decrypt with proofs and anchor on-chain.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-1">
                   <Link

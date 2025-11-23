@@ -4,8 +4,8 @@ import { useCallback, useMemo } from "react";
 import { useAccount, useConfig, usePublicClient, useReadContract, useWriteContract } from "wagmi";
 import { waitForTransactionReceipt } from "wagmi/actions";
 import { simpleVotingAbi } from "~~/contracts/abis/simpleVotingAbi";
-import { useFhevm, useFHEEncryption, toHex } from "~~/lib/fhevm/react";
 import { useWagmiEthers } from "~~/hooks/wagmi/useWagmiEthers";
+import { toHex, useFHEEncryption, useFhevm } from "~~/lib/fhevm/react";
 import { getParsedError } from "~~/utils/helper";
 
 export interface Question {
@@ -79,14 +79,11 @@ export const useVoting = () => {
     return CONTRACT_ADDRESS;
   };
 
-  const handleContractError = useCallback(
-    (error: unknown, context: string): never => {
-      const parsedError = getParsedError(error);
-      console.error(`${context}:`, error);
-      throw new Error(`${context}: ${parsedError}`);
-    },
-    [],
-  );
+  const handleContractError = useCallback((error: unknown, context: string): never => {
+    const parsedError = getParsedError(error);
+    console.error(`${context}:`, error);
+    throw new Error(`${context}: ${parsedError}`);
+  }, []);
 
   const createQuestion = useCallback(
     async (question: string, answer1: string, answer2: string, image: string, deadlineSeconds: number) => {
@@ -130,16 +127,12 @@ export const useVoting = () => {
         throw new Error("User address is not available.");
       }
       // Create a fresh encrypted input bound to your contract
-      const input = await instance.createEncryptedInput(
-        contractAddress,
-        userAddress,
-      );
+      const input = await instance.createEncryptedInput(contractAddress, userAddress);
 
       input.add8(value); // encrypt the vote choice (0 or 1)
       const { handles, inputProof } = await input.encrypt();
 
-      if (!handles?.length || !inputProof)
-        throw new Error("Encryption failed.");
+      if (!handles?.length || !inputProof) throw new Error("Encryption failed.");
 
       return {
         handle: toHex(handles[0]),
@@ -177,7 +170,7 @@ export const useVoting = () => {
         handleContractError(error, "Failed to cast vote");
       }
     },
-    [config, encryptVote, handleContractError, writeContractAsync],
+    [config, encryptVote, handleContractError, publicClient, writeContractAsync],
   );
 
   const openResults = useCallback(
@@ -245,10 +238,7 @@ export const useVoting = () => {
           return `0x${hex}` as `0x${string}`;
         };
 
-        const encryptedHandles: [string, string] = [
-          toHandleHex(encryptedTally[0]),
-          toHandleHex(encryptedTally[1]),
-        ];
+        const encryptedHandles: [string, string] = [toHandleHex(encryptedTally[0]), toHandleHex(encryptedTally[1])];
 
         return {
           question: prompt,

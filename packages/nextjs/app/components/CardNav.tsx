@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useLayoutEffect, useRef, useState } from "react";
+/* eslint-disable @next/next/no-img-element */
+import React, { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { gsap } from "gsap";
 import { GoArrowUpRight } from "react-icons/go";
@@ -38,6 +39,7 @@ export const CardNav: React.FC<CardNavProps> = ({
   const navRef = useRef<HTMLDivElement | null>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const cardCount = items.length;
 
   const calculateHeight = () => {
     const navEl = navRef.current;
@@ -62,16 +64,17 @@ export const CardNav: React.FC<CardNavProps> = ({
     return topBar + contentHeight + padding;
   };
 
-  const createTimeline = () => {
+  const createTimeline = useCallback(() => {
     const navEl = navRef.current;
     if (!navEl) return null;
+    const targets = cardsRef.current.slice(0, cardCount);
     gsap.set(navEl, { height: 60, overflow: "hidden" });
-    gsap.set(cardsRef.current, { y: 50, opacity: 0 });
+    gsap.set(targets, { y: 50, opacity: 0 });
     const tl = gsap.timeline({ paused: true });
     tl.to(navEl, { height: calculateHeight, duration: 0.4, ease });
-    tl.to(cardsRef.current, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, "-=0.1");
+    tl.to(targets, { y: 0, opacity: 1, duration: 0.4, ease, stagger: 0.08 }, "-=0.1");
     return tl;
-  };
+  }, [cardCount, ease]);
 
   useLayoutEffect(() => {
     tlRef.current = createTimeline();
@@ -79,7 +82,7 @@ export const CardNav: React.FC<CardNavProps> = ({
       tlRef.current?.kill();
       tlRef.current = null;
     };
-  }, [ease, items]);
+  }, [createTimeline]);
 
   useLayoutEffect(() => {
     const handleResize = () => {
@@ -93,7 +96,7 @@ export const CardNav: React.FC<CardNavProps> = ({
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isExpanded]);
+  }, [createTimeline, isExpanded]);
 
   const toggleMenu = () => {
     const tl = tlRef.current;

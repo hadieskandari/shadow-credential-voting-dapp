@@ -1,12 +1,12 @@
 "use client";
 
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Theme, Text, Flex, Box, Button } from "@radix-ui/themes";
 import { GlobalPolyfill } from "../components/GlobalPolyfill";
 import Navbar from "../components/Navbar";
 import ShareButtons from "../components/ShareButtons";
 import { useVoting } from "../hooks/useVoting";
-import { useEffect, useState, useMemo, useCallback, Suspense } from "react";
+import { Text, Theme } from "@radix-ui/themes";
 
 const SectionCard = ({
   title,
@@ -87,7 +87,7 @@ const ResultsContent = () => {
     }
     setLoading(true);
     try {
-        const data = await getQuestion(questionId);
+      const data = await getQuestion(questionId);
       setQuestion(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load question");
@@ -115,7 +115,8 @@ const ResultsContent = () => {
   const isPrivate = question?.question?.startsWith("🔒");
   const shareText = useMemo(() => {
     if (!question) return "";
-    if (!question.resultsFinalized) return `Encrypted tally for "${question.question.replace("🔒 ", "")}" remains locked.`;
+    if (!question.resultsFinalized)
+      return `Encrypted tally for "${question.question.replace("🔒 ", "")}" remains locked.`;
     return `Clear tally for "${question.question.replace("🔒 ", "")}": ${question.decryptedTally[0]} vs ${question.decryptedTally[1]}. Verified with Zama FHEVM.`;
   }, [question]);
 
@@ -222,11 +223,7 @@ const ResultsContent = () => {
                   <div className="flex flex-wrap gap-3 items-center">
                     <ActionButton
                       variant="primary"
-                      disabled={
-                        revealLoading ||
-                        question.resultsOpened ||
-                        Date.now() / 1000 < question.deadline
-                      }
+                      disabled={revealLoading || question.resultsOpened || Date.now() / 1000 < question.deadline}
                       onClick={async () => {
                         try {
                           setRevealLoading(true);
@@ -239,7 +236,11 @@ const ResultsContent = () => {
                         }
                       }}
                     >
-                      {question.resultsOpened ? "Tallies revealed" : revealLoading ? "Revealing…" : "Reveal encrypted tally"}
+                      {question.resultsOpened
+                        ? "Tallies revealed"
+                        : revealLoading
+                          ? "Revealing…"
+                          : "Reveal encrypted tally"}
                     </ActionButton>
                     <ActionButton
                       disabled={publishLoading || !question.resultsOpened || question.resultsFinalized}
@@ -255,7 +256,11 @@ const ResultsContent = () => {
                         }
                       }}
                     >
-                      {question.resultsFinalized ? "Results published" : publishLoading ? "Submitting…" : "Publish decrypted tally"}
+                      {question.resultsFinalized
+                        ? "Results published"
+                        : publishLoading
+                          ? "Submitting…"
+                          : "Publish decrypted tally"}
                     </ActionButton>
                   </div>
                   <div className="flex justify-end gap-2 pt-3">
@@ -290,11 +295,14 @@ const ResultsContent = () => {
                       {question.encryptedTally?.map((handle: string, idx: number) => (
                         <div key={`${handle}-${idx}`} className="flex justify-between">
                           <span>Handle #{idx + 1}</span>
-                          <span className="text-white">{handle.slice(0, 10)}…{handle.slice(-6)}</span>
+                          <span className="text-white">
+                            {handle.slice(0, 10)}…{handle.slice(-6)}
+                          </span>
                         </div>
                       ))}
                       <p className="text-xs text-gray-500">
-                        Proofs are fetched from the relayer when you publish; the contract verifies signatures before accepting.
+                        Proofs are fetched from the relayer when you publish; the contract verifies signatures before
+                        accepting.
                       </p>
                     </div>
                   </SectionCard>
@@ -312,9 +320,7 @@ export default function ResultsPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center text-white/70 bg-black">
-          Loading results…
-        </div>
+        <div className="min-h-screen flex items-center justify-center text-white/70 bg-black">Loading results…</div>
       }
     >
       <ResultsContent />

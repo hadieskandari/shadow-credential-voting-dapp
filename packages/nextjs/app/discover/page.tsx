@@ -1,29 +1,28 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
-import { Theme } from "@radix-ui/themes";
-import { Search, Filter, Clock as ClockIcon, ArrowRight, Lock, Globe2 } from "lucide-react";
-import Navbar from "../components/Navbar";
-import { GlobalPolyfill } from "../components/GlobalPolyfill";
-import { useVoting, type Question } from "../hooks/useVoting";
-import ShareButtons from "../components/ShareButtons";
+/* eslint-disable @next/next/no-img-element */
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { GlobalPolyfill } from "../components/GlobalPolyfill";
+import Navbar from "../components/Navbar";
+import ShareButtons from "../components/ShareButtons";
+import { type Question, useVoting } from "../hooks/useVoting";
+import { Theme } from "@radix-ui/themes";
+import { ArrowRight, Clock as ClockIcon, Filter, Globe2, Lock, Search, Trash2 } from "lucide-react";
 
 interface QuestionEntry {
   id: number;
   data: Question;
 }
 
-const PollCard = ({ entry }: { entry: QuestionEntry }) => {
+const PollCard = ({ entry, onArchive }: { entry: QuestionEntry; onArchive?: (id: number) => void }) => {
   const { id, data } = entry;
   const isPrivate = data.question.startsWith("🔒");
   const displayQuestion = data.question.replace(/^🔒\s*/, "");
   const deadlineLabel = new Date(data.deadline * 1000).toLocaleString();
   const answers = data.possibleAnswers.join(" · ");
   const total = (data.decryptedTally ?? []).reduce((acc, v) => acc + v, 0);
-  const creatorAvatar = data.image?.trim()
-    ? data.image
-    : "/shadow-logo.png";
+  const creatorAvatar = data.image?.trim() ? data.image : "/shadow-logo.png";
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/vote?questionId=${id}` : "";
 
   const handleShare = (platform: "x" | "farcaster") => () => {
@@ -46,12 +45,25 @@ const PollCard = ({ entry }: { entry: QuestionEntry }) => {
     navigator.clipboard?.writeText(shareUrl).catch(() => {});
   };
 
+  const [confirmArchive, setConfirmArchive] = useState(false);
+
   return (
     <div className="group relative overflow-hidden rounded-[28px] border border-white/10 bg-gradient-to-b from-[#0b0b0b]/90 via-[#0d0d0d]/70 to-[#0b0b0b]/90 p-5 shadow-[0_20px_50px_rgba(0,0,0,0.55)] transition hover:-translate-y-1 hover:border-white/20">
-      <div className="absolute inset-0 opacity-60" style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,210,8,0.16), transparent 40%)" }} />
+      <div
+        className="absolute inset-0 opacity-60"
+        style={{ background: "radial-gradient(circle at 20% 20%, rgba(255,210,8,0.16), transparent 40%)" }}
+      />
       <div className="absolute inset-x-4 bottom-0 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none" />
 
-      <div className="absolute top-3 right-3 z-20">
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setConfirmArchive(true)}
+          className="rounded-full border border-red-400/40 bg-red-500/15 p-2 text-red-200 shadow-[0_8px_25px_rgba(239,68,68,0.35)] transition hover:-translate-y-0.5 hover:bg-red-500/25"
+          title="Archive this poll"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
         {isPrivate ? (
           <ShareButtons onCopy={handleCopy} />
         ) : (
@@ -71,8 +83,11 @@ const PollCard = ({ entry }: { entry: QuestionEntry }) => {
         />
         <div className="flex-1">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.35em] text-gray-400">
-            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${isPrivate ? "bg-white/5 border border-white/10" : "bg-[#ffd208]/10 border border-[#ffd208]/30 text-[#ffd208]"}`}>
-              {isPrivate ? <Lock className="h-3 w-3" /> : <Globe2 className="h-3 w-3" />} {isPrivate ? "Private" : "Public"}
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 ${isPrivate ? "bg-white/5 border border-white/10" : "bg-[#ffd208]/10 border border-[#ffd208]/30 text-[#ffd208]"}`}
+            >
+              {isPrivate ? <Lock className="h-3 w-3" /> : <Globe2 className="h-3 w-3" />}{" "}
+              {isPrivate ? "Private" : "Public"}
             </span>
             <span className="text-gray-500">#{id}</span>
           </div>
@@ -109,9 +124,37 @@ const PollCard = ({ entry }: { entry: QuestionEntry }) => {
           View &amp; vote <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
+      {confirmArchive && (
+        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4 rounded-[28px] bg-black/80 px-6 text-center text-white backdrop-blur-md transition">
+          <p className="text-sm text-gray-200">
+            Archiving hides this poll from Discover on this device. You can restore it later by clearing the archive.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setConfirmArchive(false)}
+              className="rounded-full border border-white/20 px-4 py-2 text-sm text-gray-200 transition hover:border-white/50"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                onArchive?.(id);
+                setConfirmArchive(false);
+              }}
+              className="rounded-full bg-red-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(239,68,68,0.5)] transition hover:-translate-y-0.5"
+            >
+              Archive
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+const ARCHIVE_STORAGE_KEY = "shadow-archived-polls";
 
 export default function DiscoverPage() {
   const { questionsCount, getQuestion } = useVoting();
@@ -120,6 +163,27 @@ export default function DiscoverPage() {
   const [filterType, setFilterType] = useState<"all" | "public" | "private">("all");
   const [entries, setEntries] = useState<QuestionEntry[]>([]);
   const [loading, setLoading] = useState(false);
+  const [archivedIds, setArchivedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem(ARCHIVE_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setArchivedIds(parsed);
+        }
+      }
+    } catch {
+      setArchivedIds([]);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    localStorage.setItem(ARCHIVE_STORAGE_KEY, JSON.stringify(archivedIds));
+  }, [archivedIds]);
 
   useEffect(() => {
     const load = async () => {
@@ -144,6 +208,9 @@ export default function DiscoverPage() {
 
   const filteredEntries = useMemo(() => {
     let list = [...entries];
+    if (archivedIds.length) {
+      list = list.filter(entry => !archivedIds.includes(entry.id));
+    }
 
     if (query) {
       const q = query.toLowerCase();
@@ -167,7 +234,11 @@ export default function DiscoverPage() {
     });
 
     return list;
-  }, [entries, query, sort, filterType]);
+  }, [archivedIds, entries, query, sort, filterType]);
+
+  const handleArchive = useCallback((pollId: number) => {
+    setArchivedIds(prev => (prev.includes(pollId) ? prev : [...prev, pollId]));
+  }, []);
 
   return (
     <Theme
@@ -188,7 +259,9 @@ export default function DiscoverPage() {
           <div className="w-full max-w-6xl space-y-10 pb-16">
             <section className="rounded-[40px] border border-white/10 bg-black/70 p-10 text-center text-white space-y-4 shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
               <p className="text-xs uppercase tracking-[0.45em] text-[#ffd208]/80">Discover</p>
-              <h1 className="text-4xl md:text-5xl font-semibold leading-tight">Vote privately on live encrypted tallies</h1>
+              <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+                Vote privately on live encrypted tallies
+              </h1>
               <p className="text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
                 Browse open polls. Every vote is encrypted client-side, so your choice remains secret until the creator
                 reveals results.
@@ -256,11 +329,13 @@ export default function DiscoverPage() {
               {!loading &&
                 filteredEntries.map(entry => (
                   <div key={entry.id} className="fade-card">
-                    <PollCard entry={entry} />
+                    <PollCard entry={entry} onArchive={handleArchive} />
                   </div>
                 ))}
               {!loading && !filteredEntries.length && (
-                <div className="rounded-2xl border border-white/10 bg-black/40 px-6 py-12 text-center text-white/70">No polls yet.</div>
+                <div className="rounded-2xl border border-white/10 bg-black/40 px-6 py-12 text-center text-white/70">
+                  No polls yet.
+                </div>
               )}
             </div>
           </div>

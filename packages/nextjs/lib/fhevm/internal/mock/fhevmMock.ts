@@ -1,6 +1,6 @@
-import { JsonRpcProvider } from "ethers";
-import { MockFhevmInstance } from "@fhevm/mock-utils";
 import type { FhevmInstance } from "../../fhevmTypes";
+import { MockFhevmInstance } from "@fhevm/mock-utils";
+import { JsonRpcProvider } from "ethers";
 
 export const fhevmMockCreateInstance = async (parameters: {
   rpcUrl: string;

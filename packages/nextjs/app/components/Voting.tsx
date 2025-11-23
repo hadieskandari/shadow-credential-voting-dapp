@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Box, Button, Text } from "@radix-ui/themes";
-import { useAccount } from "wagmi";
-import { useVoting, type Question } from "../hooks/useVoting";
+/* eslint-disable @next/next/no-img-element */
+import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { notification } from "../../utils/helper/notification";
+import { type Question, useVoting } from "../hooks/useVoting";
 import ShareButtons from "./ShareButtons";
 import VoteStats from "./VoteStats";
-import { notification } from "../../utils/helper/notification";
+import { Box, Button, Text } from "@radix-ui/themes";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 interface VotingProps {
   questionId: number;
@@ -95,9 +96,16 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   const deadlinePassed = questionData ? Date.now() / 1000 >= questionData.deadline : false;
   const decryptedTallies = questionData?.decryptedTally ?? [0, 0];
   const totalVotes = decryptedTallies[0] + decryptedTallies[1];
-  const showTallies = Boolean(questionData?.resultsFinalized);
+  const noVotesSubmitted = totalVotes === 0;
+  const showTallies = Boolean(questionData?.resultsOpened || questionData?.resultsFinalized);
   const canPublishResults = Boolean(questionData?.resultsOpened && !questionData?.resultsFinalized);
   const isPrivatePoll = questionData.question.startsWith("🔒");
+  const statusLabel = (() => {
+    if (questionData.resultsFinalized) return "Published";
+    if (noVotesSubmitted && deadlinePassed) return "No Votes Submitted";
+    if (questionData.resultsOpened) return "Awaiting publish";
+    return deadlinePassed ? "Ended" : "Live";
+  })();
 
   const handleShare = (platform: "x" | "farcaster") => () => {
     if (typeof window === "undefined") return;
@@ -109,9 +117,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
       )}&url=${encodeURIComponent(voteUrl)}`;
       window.open(link, "_blank");
     } else {
-      const link = `https://warpcast.com/~/compose?text=${encodeURIComponent(
-        `Vote on "${prompt}" ➜ ${voteUrl}`,
-      )}`;
+      const link = `https://warpcast.com/~/compose?text=${encodeURIComponent(`Vote on "${prompt}" ➜ ${voteUrl}`)}`;
       window.open(link, "_blank");
     }
   };
@@ -122,15 +128,13 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
 
   const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
   const featureImage = questionData?.image?.trim() ? questionData.image : fallbackImage;
-  const creatorAvatar = questionData?.image?.trim()
-    ? questionData.image
-    : "/shadow-logo.png";
+  const creatorAvatar = questionData?.image?.trim() ? questionData.image : "/shadow-logo.png";
 
   const ActionButton = ({
     children,
     variant = "ghost",
     disabled,
-    onClick
+    onClick,
   }: {
     children: ReactNode;
     variant?: "ghost" | "primary";
@@ -145,7 +149,11 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
         : "border border-white/15 text-white hover:border-white/40";
     const disabledStyles = "opacity-40 cursor-not-allowed border border-white/10 text-gray-500";
     return (
-      <button className={`${base} ${disabled ? disabledStyles : enabled}`} disabled={disabled} onClick={disabled ? undefined : onClick}>
+      <button
+        className={`${base} ${disabled ? disabledStyles : enabled}`}
+        disabled={disabled}
+        onClick={disabled ? undefined : onClick}
+      >
         {children}
       </button>
     );
@@ -244,12 +252,24 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Votes</p>
-            <p className="text-lg font-semibold text-white">{totalVotes || (questionData.resultsOpened ? "Decrypt" : "—")}</p>
+            <p className="text-lg font-semibold text-white">
+              {totalVotes || (questionData.resultsOpened ? "Decrypt" : "—")}
+            </p>
           </div>
           <div className="flex flex-col gap-1">
             <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Status</p>
-            <p className={`text-sm ${questionData.resultsFinalized ? "text-emerald-300" : "text-amber-200"}`}>
-              {questionData.resultsFinalized ? "Published" : questionData.resultsOpened ? "Awaiting publish" : deadlinePassed ? "Ended" : "Live"}
+            <p
+              className={`text-sm ${
+                statusLabel === "Published"
+                  ? "text-emerald-300"
+                  : statusLabel === "No Votes Submitted"
+                    ? "text-rose-200"
+                    : statusLabel === "Awaiting publish"
+                      ? "text-amber-200"
+                      : "text-slate-200"
+              }`}
+            >
+              {statusLabel}
             </p>
           </div>
         </div>
@@ -280,9 +300,11 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           <p className="text-sm text-gray-300">
             {questionData.resultsFinalized
               ? "Tallies published on-chain."
-              : questionData.resultsOpened
-                ? "Tallies decrypted — publish to reveal clear counts."
-                : `Votes remain encrypted until ${new Date(questionData.deadline * 1000).toLocaleString()}.`}
+              : noVotesSubmitted && deadlinePassed
+                ? "Voting window closed with no submissions. Nothing can be decrypted."
+                : questionData.resultsOpened
+                  ? "Tallies decrypted — publish to reveal clear counts."
+                  : `Votes remain encrypted until ${new Date(questionData.deadline * 1000).toLocaleString()}.`}
           </p>
           <div className="grid gap-2.5 sm:grid-cols-2">
             {questionData.possibleAnswers.map((ans, idx) => {
@@ -304,11 +326,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-[#ffd208] via-white to-white/80 transition-all duration-300"
                       style={{
-                        width: showTallies
-                          ? totalVotes === 0
-                            ? "0%"
-                            : `${percent}%`
-                          : "100%",
+                        width: showTallies ? (totalVotes === 0 ? "0%" : `${percent}%`) : "100%",
                         opacity: showTallies ? 1 : 0.25,
                       }}
                     />
@@ -321,7 +339,11 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
 
         <div className="flex flex-col gap-4">
           {!isConnected ? (
-            <Button onClick={() => openConnectModal?.()} size="3" className="w-full bg-[#ffd208] text-black font-semibold">
+            <Button
+              onClick={() => openConnectModal?.()}
+              size="3"
+              className="w-full bg-[#ffd208] text-black font-semibold"
+            >
               Connect wallet to vote
             </Button>
           ) : deadlinePassed ? (
@@ -362,19 +384,19 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <ActionButton
-              disabled={!deadlinePassed || questionData.resultsOpened || revealLoading}
+              disabled={!deadlinePassed || questionData.resultsOpened || revealLoading || noVotesSubmitted}
               onClick={async () => {
-                if (!deadlinePassed || questionData.resultsOpened) return;
+                if (!deadlinePassed || questionData.resultsOpened || noVotesSubmitted) return;
                 let toastId: string | undefined;
                 try {
-                  toastId = notification.loading("Requesting tally reveal…") ?? undefined;
+                  toastId = notification.loading("Requesting Tally Reveal…") ?? undefined;
                   setRevealLoading(true);
                   await openResults(questionId);
                   await refreshQuestion();
-                  notification.success("Encrypted tally reveal requested.");
+                  notification.success("Encrypted Tally Reveal Requested.");
                 } catch (err) {
-                  console.error("Failed to open results", err);
-                  notification.error("Failed to reveal encrypted tally.");
+                  console.error("Failed To Open Results", err);
+                  notification.error("Failed To Reveal Encrypted Tally.");
                 } finally {
                   setRevealLoading(false);
                   if (toastId) {
@@ -383,24 +405,24 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
                 }
               }}
             >
-              {revealLoading ? "Publishing…" : "Reveal encrypted tally"}
+              {noVotesSubmitted ? "No Votes To Reveal" : revealLoading ? "Publishing…" : "Reveal Encrypted Tally"}
             </ActionButton>
             <ActionButton
               variant="primary"
-              disabled={!canPublishResults || publishLoading}
+              disabled={!canPublishResults || publishLoading || noVotesSubmitted}
               onClick={async () => {
-                if (!canPublishResults) return;
+                if (!canPublishResults || noVotesSubmitted) return;
                 let toastId: string | undefined;
                 try {
-                  toastId = notification.loading("Publishing clear tally…") ?? undefined;
+                  toastId = notification.loading("Publishing Clear Tally…") ?? undefined;
                   setPublishLoading(true);
                   await publishResults(questionId);
                   await refreshQuestion();
-                  notification.success("Clear tally published on-chain.");
+                  notification.success("Clear Tally Published On-chain.");
                 } catch (err) {
-                  console.error("Failed to publish results", err);
-                  setError(err instanceof Error ? err.message : "Failed to publish results.");
-                  notification.error(err instanceof Error ? err.message : "Failed to publish results.");
+                  console.error("Failed To Publish Results", err);
+                  setError(err instanceof Error ? err.message : "Failed To Publish .");
+                  notification.error(err instanceof Error ? err.message : "Failed To Publish Results.");
                 } finally {
                   setPublishLoading(false);
                   if (toastId) {
@@ -409,7 +431,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
                 }
               }}
             >
-              {publishLoading ? "Submitting…" : "Publish clear tally"}
+              {noVotesSubmitted ? "No Votes To Publish" : publishLoading ? "Submitting…" : "Publish Clear Tally"}
             </ActionButton>
           </div>
         </div>

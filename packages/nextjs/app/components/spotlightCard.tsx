@@ -7,7 +7,11 @@ interface SpotlightCardProps extends PropsWithChildren {
   spotlightColor?: string;
 }
 
-export const SpotlightCard = ({ children, className = "", spotlightColor = "rgba(255,255,255,0.25)" }: SpotlightCardProps) => {
+export const SpotlightCard = ({
+  children,
+  className = "",
+  spotlightColor = "rgba(255,255,255,0.25)",
+}: SpotlightCardProps) => {
   const divRef = useRef<HTMLDivElement | null>(null);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {

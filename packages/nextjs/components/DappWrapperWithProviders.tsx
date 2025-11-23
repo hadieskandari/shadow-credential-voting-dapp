@@ -1,17 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import PageTransition from "./PageTransition";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
 import { useTheme } from "next-themes";
 import { Toaster } from "react-hot-toast";
 import { WagmiProvider } from "wagmi";
+import Silk from "~~/app/components/silk";
 import { BlockieAvatar } from "~~/components/helper";
 import { InMemoryStorageProvider } from "~~/lib/fhevm/react";
-import PageTransition from "./PageTransition";
 import { wagmiConfig } from "~~/services/web3/wagmiConfig";
-import Silk from "~~/app/components/silk";
 
 const BACKDROP = {
   color: "#a3a3a3",
@@ -54,7 +54,7 @@ export const DappWrapperWithProviders = ({ children }: { children: React.ReactNo
                   scale={BACKDROP.scale}
                   color={BACKDROP.color}
                   noiseIntensity={BACKDROP.noiseIntensity}
-wh                  rotation={BACKDROP.rotation}
+                  rotation={BACKDROP.rotation}
                 />
               </div>
             </div>

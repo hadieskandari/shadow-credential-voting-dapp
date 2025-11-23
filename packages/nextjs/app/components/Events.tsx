@@ -66,41 +66,46 @@ export const Events = ({ triggerKey }: { triggerKey?: string }) => {
   if (!CONTRACT_ADDRESS) return null;
 
   return (
-    <div className="container mt-10">
-      {/* <h2 className="text-xl font-semibold mb-4">Recent Votes</h2>
-      <div className="spinner-parent">
-        {isFetching && (
-          <div className="overlay">
-            <div className="spinner" />
+    <section className="mt-10 w-full">
+      <div className="relative overflow-hidden rounded-[32px] border border-white/10 bg-black/60 p-6 text-white shadow-[0_25px_80px_rgba(0,0,0,0.45)]">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.45em] text-gray-500">Recent votes</p>
+            <h3 className="text-2xl font-semibold text-white">Live activity from the contract</h3>
           </div>
-        )}
+          {isFetching && <span className="text-xs text-gray-400">Refreshing…</span>}
+        </div>
+
         {events.length === 0 ? (
-          <p>No votes recorded yet.</p>
+          <p className="mt-6 text-sm text-gray-400">No votes recorded yet.</p>
         ) : (
-          <ul className="events-list">
+          <ul className="mt-6 space-y-3 text-sm">
             {events.map(event => (
-              <li key={`${event.txHash}-${event.questionId}`} className="event-item">
-                <div className="flex items-center justify-between text-sm text-gray-500">
+              <li
+                key={`${event.txHash}-${event.questionId}`}
+                className="rounded-2xl border border-white/5 bg-white/5 px-4 py-3 text-gray-200"
+              >
+                <div className="flex flex-wrap items-center justify-between gap-3 text-xs uppercase tracking-[0.35em] text-gray-500">
                   <span>Question #{event.questionId}</span>
-                  <span>{event.timestamp ?? "Pending timestamp"}</span>
+                  <span>{event.timestamp ?? "Timestamp pending"}</span>
                 </div>
-                <div className="mt-1 text-sm">
-                  <p>
-                    <strong>Voter:</strong> {event.voter.slice(0, 6)}...{event.voter.slice(-4)}
-                  </p>
-                  <p>
-                    <strong>Answer Index:</strong> {event.answerIndex}
-                  </p>
-                  <p className="truncate">
-                    <strong>Tx:</strong> {event.txHash}
-                  </p>
+                <div className="mt-2 flex flex-wrap items-center gap-6 text-sm">
+                  <span>
+                    <strong className="text-white/80">Voter:</strong> {event.voter.slice(0, 6)}…{event.voter.slice(-4)}
+                  </span>
+                  <span>
+                    <strong className="text-white/80">Answer:</strong> #{event.answerIndex + 1}
+                  </span>
+                  <span className="truncate">
+                    <strong className="text-white/80">Tx:</strong> {event.txHash.slice(0, 10)}…{event.txHash.slice(-6)}
+                  </span>
                 </div>
               </li>
             ))}
           </ul>
         )}
-      </div> */}
-    </div>
+      </div>
+    </section>
   );
 };
 
