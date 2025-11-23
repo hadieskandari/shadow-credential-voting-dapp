@@ -89,7 +89,12 @@ export const useFHECounterWagmi = (parameters: {
   // Decrypt (reuse existing decrypt hook for simplicity)
   const requests = useMemo(() => {
     if (!hasContract || !countHandle || countHandle === ethers.ZeroHash) return undefined;
-    return [{ handle: countHandle, contractAddress: fheCounter!.address } as const];
+    return [
+      {
+        handle: countHandle as `0x${string}`,
+        contractAddress: fheCounter!.address as `0x${string}`,
+      },
+    ] as const;
   }, [hasContract, fheCounter?.address, countHandle]);
 
   const {
