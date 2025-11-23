@@ -3,25 +3,21 @@
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "node",
-    "lib": [
-      "ES2022"
-    ],
-    "types": [
-      "node"
-    ],
+    "lib": ["ES2022"],
+    "types": ["node"],
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
   "include": [
-    "packages/fhevm-sdk/**/*",
-    "packages/hardhat/**/*",
+    "packages/**/*",
     "scripts/**/*"
   ],
   "exclude": [
-    "packages/*-showcase/**/*",
     "node_modules",
     "dist",
+    "packages",
+    "original-project"
   ]
 }
