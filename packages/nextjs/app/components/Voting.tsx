@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { type ReactNode, useCallback, useEffect, useState } from "react";
+import Head from "next/head";
 import { notification } from "../../utils/helper/notification";
 import { type Question, useVoting } from "../hooks/useVoting";
 import ShareButtons from "./ShareButtons";
@@ -9,6 +10,7 @@ import VoteStats from "./VoteStats";
 import { Box, Button, Text } from "@radix-ui/themes";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { buildShareCopy } from "~~/utils/helper/shareCopy";
 
 interface VotingProps {
   questionId: number;
@@ -27,6 +29,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   const [questionData, setQuestionData] = useState<Question | null>(null);
   const [revealLoading, setRevealLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
+  const [origin, setOrigin] = useState("");
 
   const refreshQuestion = useCallback(async () => {
     if (!questionId && questionId !== 0) return;
@@ -55,6 +58,11 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
       setVotedFor(null);
     }
   }, [address]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setOrigin(window.location.origin);
+  }, []);
 
   const handleVote = async (answerIndex: number) => {
     if (!isConnected) {
@@ -110,16 +118,25 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   const handleShare = (platform: "x" | "farcaster") => () => {
     if (typeof window === "undefined") return;
     const voteUrl = `${window.location.origin}/vote?questionId=${questionId}`;
-    const prompt = questionData.question.replace("🔒 ", "");
-    if (platform === "x") {
-      const link = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        `Vote on "${prompt}" and keep your choice private`,
-      )}&url=${encodeURIComponent(voteUrl)}`;
-      window.open(link, "_blank");
-    } else {
-      const link = `https://warpcast.com/~/compose?text=${encodeURIComponent(`Vote on "${prompt}" ➜ ${voteUrl}`)}`;
-      window.open(link, "_blank");
-    }
+    const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
+    const shareCopy = buildShareCopy({
+      prompt: displayQuestion,
+      deadline: questionData.deadline,
+      isPrivate: isPrivatePoll,
+      resultsOpened: questionData.resultsOpened,
+      resultsFinalized: questionData.resultsFinalized,
+      userHasVoted,
+      context: "voting",
+    });
+    const bannerUrl = `${window.location.origin}/shadow-banner.jpg`;
+    const payload = [shareCopy, bannerUrl].filter(Boolean).join("\n");
+    const encodedText = encodeURIComponent(payload);
+    const encodedUrl = encodeURIComponent(voteUrl);
+    const link =
+      platform === "x"
+        ? `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+        : `https://warpcast.com/~/compose?text=${encodedText}`;
+    window.open(link, "_blank", "noopener,noreferrer");
   };
 
   const wrapperClass = primary
@@ -129,6 +146,13 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
   const featureImage = questionData?.image?.trim() ? questionData.image : fallbackImage;
   const creatorAvatar = questionData?.image?.trim() ? questionData.image : "/shadow-logo.png";
+  const shareImagePath = questionData?.image?.trim() ? questionData.image : "/shadow-banner.jpg";
+  const absoluteShareImage =
+    shareImagePath && shareImagePath.startsWith("http") ? shareImagePath : origin ? `${origin}${shareImagePath}` : "";
+  const shareTitle = `Vote on "${displayQuestion}" | Shadow`;
+  const shareDescription = questionData.resultsFinalized
+    ? "Clear tallies published with FHE proofs."
+    : "Encrypted tallies stay sealed until the creator reveals them.";
 
   const ActionButton = ({
     children,
@@ -448,30 +472,60 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
 
   if (primary) {
     return (
-      <div className="w-full px-4 my-8 flex justify-center">
-        <div className="w-full max-w-6xl">
-          <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-            <Box className="w-full">{cardBody}</Box>
-            <VoteStats
-              questionId={questionId}
-              question={questionData}
-              account={address}
-              chainId={undefined}
-              hasVoted={userHasVoted}
-              votedFor={votedFor}
-              fheStatus={fheStatus}
-              isConnected={isConnected}
-            />
+      <>
+        {questionData && (
+          <Head>
+            <title>{shareTitle}</title>
+            <meta property="og:title" content={shareTitle} />
+            <meta property="og:description" content={shareDescription} />
+            {absoluteShareImage && <meta property="og:image" content={absoluteShareImage} />}
+            {origin && <meta property="og:url" content={`${origin}/vote?questionId=${questionId}`} />}
+            <meta property="twitter:card" content="summary_large_image" />
+            <meta property="twitter:title" content={shareTitle} />
+            <meta property="twitter:description" content={shareDescription} />
+            {absoluteShareImage && <meta property="twitter:image" content={absoluteShareImage} />}
+          </Head>
+        )}
+        <div className="w-full px-4 my-8 flex justify-center">
+          <div className="w-full max-w-6xl">
+            <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+              <Box className="w-full">{cardBody}</Box>
+              <VoteStats
+                questionId={questionId}
+                question={questionData}
+                account={address}
+                chainId={undefined}
+                hasVoted={userHasVoted}
+                votedFor={votedFor}
+                fheStatus={fheStatus}
+                isConnected={isConnected}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="w-full h-full">
-      <Box className="w-full h-full">{cardBody}</Box>
-    </div>
+    <>
+      {questionData && (
+        <Head>
+          <title>{shareTitle}</title>
+          <meta property="og:title" content={shareTitle} />
+          <meta property="og:description" content={shareDescription} />
+          {absoluteShareImage && <meta property="og:image" content={absoluteShareImage} />}
+          {origin && <meta property="og:url" content={`${origin}/vote?questionId=${questionId}`} />}
+          <meta property="twitter:card" content="summary_large_image" />
+          <meta property="twitter:title" content={shareTitle} />
+          <meta property="twitter:description" content={shareDescription} />
+          {absoluteShareImage && <meta property="twitter:image" content={absoluteShareImage} />}
+        </Head>
+      )}
+      <div className="w-full h-full">
+        <Box className="w-full h-full">{cardBody}</Box>
+      </div>
+    </>
   );
 };
 

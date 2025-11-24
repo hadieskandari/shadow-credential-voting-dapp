@@ -8,7 +8,7 @@ const titleTemplate = "%s | helper 2";
 export const getMetadata = ({
   title,
   description,
-  imageRelativePath = "/thumbnail.jpg",
+  imageRelativePath = "/shadow-banner.jpg",
 }: {
   title: string;
   description: string;

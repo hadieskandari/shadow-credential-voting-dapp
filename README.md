@@ -1,5 +1,7 @@
 # Shadow — Confidential Voting dApp
 
+![Shadow Banner](packages/nextjs/public/shadow-banner.jpg)
+
 Shadow is a premium voting experience built on Zama’s FHEVM stack. Every ballot is encrypted in the browser, transmitted through the Relayer SDK, and tallied inside a fully homomorphic smart contract. Creators stay in control of when clear counts are revealed, while voters get verifiable privacy without sacrificing transparency or UX.
 
 ## Why Shadow

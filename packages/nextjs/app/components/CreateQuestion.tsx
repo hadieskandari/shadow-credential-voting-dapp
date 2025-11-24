@@ -228,7 +228,7 @@ export const CreateQuestion = () => {
 
   return (
     <section className="w-full px-4 py-12 sm:px-6" id="create">
-      <div className="relative mx-auto w-full max-w-5xl space-y-10 overflow-hidden rounded-[44px] border border-white/10 bg-[#050505]/95 p-6 sm:p-10 shadow-[0_40px_120px_rgba(0,0,0,0.65)]">
+      <div className="relative mx-auto w-full max-w-6xl space-y-10 overflow-hidden rounded-[44px] border border-white/10 bg-[#050505]/95 p-6 sm:p-10 shadow-[0_40px_120px_rgba(0,0,0,0.65)]">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
           style={{
@@ -237,7 +237,7 @@ export const CreateQuestion = () => {
         />
         <div className="relative space-y-8">
           <header className="space-y-4 text-center">
-            <p className="whitespace-nowrap text-xs uppercase tracking-[0.55em] text-[#ffd208]/80">
+            <p className="text-xs uppercase tracking-[0.4em] text-[#ffd208]/80 sm:tracking-[0.55em]">
               Zama · Confidential ballots
             </p>
             <h2 className="text-[30px] leading-[1.2] font-semibold tracking-tight text-white sm:text-4xl md:text-5xl">
@@ -437,24 +437,28 @@ export const CreateQuestion = () => {
                           </span>
                         </div>
 
-                        <div className="flex w-full flex-row flex-wrap gap-3">
+                        <div className="flex w-full flex-row gap-2 flex-nowrap">
                           <GlowButton
                             type="button"
                             onClick={() => copyLink(entry.id)}
                             fullWidth={false}
-                            className="flex w-full items-center justify-center gap-2 px-4 py-2 text-sm sm:w-auto"
+                            className="flex flex-1 min-w-[45%] items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
                           >
                             <Copy className="h-4 w-4" />
-                            <span>{copiedId === entry.id ? "Link copied" : "Copy link"}</span>
+                            <span className="hidden sm:inline">
+                              {copiedId === entry.id ? "Link copied" : "Copy link"}
+                            </span>
+                            <span className="sm:hidden">{copiedId === entry.id ? "Copied" : "Copy"}</span>
                           </GlowButton>
                           <GlowButton
                             type="button"
                             fullWidth={false}
-                            className="flex w-full items-center justify-center gap-2 px-4 py-2 text-sm sm:w-auto"
+                            className="flex flex-1 min-w-[45%] items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
                             onClick={() => window.open(link, "_blank")}
                           >
                             <Share2 className="h-4 w-4" />
-                            <span>Share preview</span>
+                            <span className="hidden sm:inline">Share preview</span>
+                            <span className="sm:hidden">Share</span>
                           </GlowButton>
                         </div>
                       </div>

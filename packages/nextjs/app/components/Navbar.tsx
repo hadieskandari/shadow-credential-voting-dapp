@@ -9,10 +9,10 @@ const navItems: CardNavItem[] = [
     bgColor: "#111",
     textColor: "#fff",
     links: [
-      { label: "Twitter (X)", href: "https://x.com/zama_fhe" },
-      { label: "GitHub", href: "https://github.com/zama-ai" },
-      { label: "Telegram", href: "https://t.me/zama_fhe" },
-      { label: "Email", href: "mailto:hello@zama.ai" },
+      { label: "Twitter (X)", href: "https://x.com/missthedip" },
+      { label: "GitHub", href: "https://github.com/hadieskandari" },
+      { label: "Telegram", href: "https://t.me/mugetso" },
+      { label: "Email", href: "mailto:0xmugetso@gmail.com" },
     ],
   },
   {
@@ -20,7 +20,7 @@ const navItems: CardNavItem[] = [
     bgColor: "#1f1f1f",
     textColor: "#fff",
     links: [
-      { label: "Featured", href: "https://www.zama.ai/" },
+      { label: "Featured", href: "https://www.zama.org/" },
       { label: "Case Studies", href: "https://www.zama.ai/blog" },
     ],
   },

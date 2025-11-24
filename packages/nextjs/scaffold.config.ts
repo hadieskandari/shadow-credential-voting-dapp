@@ -23,10 +23,12 @@ if (!rawAlchemyKey) {
 
 const preferredChainId = Number(process.env.NEXT_PUBLIC_CHAIN_ID ?? chains.sepolia.id);
 const preferredChain = preferredChainId === chains.hardhat.id ? chains.hardhat : chains.sepolia;
+const liveNetworks =
+  preferredChain.id === chains.hardhat.id ? [chains.hardhat] : [chains.sepolia, chains.mainnet];
 
 const scaffoldConfig = {
   // The networks on which your DApp is live (avoid including hardhat when not in use to prevent failing RPC polls)
-  targetNetworks: preferredChain.id === chains.hardhat.id ? [chains.hardhat] : [chains.sepolia],
+  targetNetworks: liveNetworks,
   // The interval at which your front-end polls the RPC servers for new data (it has no effect if you only target the local network (default is 4000))
   pollingInterval: 30000,
   // This is ours Alchemy's default API key.

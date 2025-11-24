@@ -172,36 +172,36 @@ const VotePage = () => {
             onClick={closeGuide}
           />
           <div
-            className={`relative z-10 w-full max-w-3xl rounded-[36px] border border-white/10 bg-[#050505]/95 p-6 sm:p-10 text-white shadow-[0_40px_120px_rgba(0,0,0,0.65)] transition-all duration-300 ${showGuide ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"}`}
+            className={`relative z-10 w-full max-w-xl rounded-[32px] border border-white/10 bg-[#060606]/95 p-5 text-white shadow-[0_32px_100px_rgba(0,0,0,0.6)] transition-all duration-300 ${showGuide ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-95"}`}
           >
             <button
               type="button"
-              className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/20 text-gray-400 transition hover:text-white"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-[#ffd208] text-black shadow-[0_12px_26px_rgba(255,210,8,0.45)] transition hover:shadow-[0_16px_32px_rgba(255,210,8,0.55)]"
               onClick={closeGuide}
               aria-label="Close voting guide"
             >
               ✕
             </button>
-            <p className="text-xs uppercase tracking-[0.4em] text-[#ffd208]/80">Shadow walkthrough</p>
-            <h3 className="mt-2 text-2xl font-semibold">How to cast a confidential vote</h3>
-            <div className="mt-6 space-y-6">
+            <p className="text-[11px] uppercase tracking-[0.4em] text-[#ffd208]/80">Shadow walkthrough</p>
+            <h3 className="mt-2 text-xl font-semibold">How to cast a confidential vote</h3>
+            <div className="mt-4 grid gap-4">
               {guideSteps.map((step, index) => (
-                <div key={step.title} className="space-y-4">
-                  <div className="flex items-start gap-4 rounded-3xl border border-white/10 bg-white/5 p-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-[#ffd208]">
+                <div key={step.title} className="space-y-3">
+                  <div className="flex items-start gap-3 rounded-3xl border border-white/10 bg-white/5 p-3 text-sm">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-[#ffd208]">
                       {step.icon}
                     </div>
-                    <div className="flex-1">
-                      <p className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">
+                    <div className="flex-1 space-y-1">
+                      <p className="text-[10px] font-semibold uppercase tracking-[0.4em] text-gray-400">
                         Step {index + 1}
                       </p>
-                      <h4 className="text-lg font-semibold text-white">{step.title}</h4>
-                      <p className="text-sm text-gray-200">{step.description}</p>
+                      <h4 className="text-base font-semibold text-white">{step.title}</h4>
+                      <p className="text-sm text-gray-200 leading-snug">{step.description}</p>
                     </div>
                   </div>
                   {index < guideSteps.length - 1 && (
                     <div className="flex items-center justify-center text-[#ffd208]/80">
-                      <ArrowDown className="h-6 w-6" />
+                      <ArrowDown className="h-5 w-5" />
                     </div>
                   )}
                 </div>

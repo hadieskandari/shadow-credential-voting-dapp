@@ -8,6 +8,7 @@ import ShareButtons from "../components/ShareButtons";
 import { useVoting } from "../hooks/useVoting";
 import { Text, Theme } from "@radix-ui/themes";
 import { notification } from "~~/utils/helper/notification";
+import { buildShareCopy } from "~~/utils/helper/shareCopy";
 
 const SectionCard = ({
   title,
@@ -78,6 +79,8 @@ const ResultsContent = () => {
   const [question, setQuestion] = useState<any>(null);
   const [revealLoading, setRevealLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [shareImageUrl, setShareImageUrl] = useState("");
 
   const loadQuestion = useCallback(async () => {
     if (Number.isNaN(questionId)) {
@@ -101,6 +104,12 @@ const ResultsContent = () => {
     loadQuestion();
   }, [loadQuestion]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setShareUrl(`${window.location.origin}/results?questionId=${questionId}`);
+    setShareImageUrl(`${window.location.origin}/shadow-banner.jpg`);
+  }, [questionId]);
+
   const decryptedTallies = question?.decryptedTally ?? [0, 0];
   const totalVotes = decryptedTallies[0] + decryptedTallies[1];
   const timeline = useMemo(() => {
@@ -116,19 +125,31 @@ const ResultsContent = () => {
   const isPrivate = question?.question?.startsWith("🔒");
   const shareText = useMemo(() => {
     if (!question) return "";
-    if (!question.resultsFinalized)
-      return `Encrypted tally for "${question.question.replace("🔒 ", "")}" remains locked.`;
-    return `Clear tally for "${question.question.replace("🔒 ", "")}": ${question.decryptedTally[0]} vs ${question.decryptedTally[1]}. Verified with Zama FHEVM.`;
+    return buildShareCopy({
+      prompt: question.question.replace("🔒 ", ""),
+      deadline: question.deadline,
+      isPrivate: question.question.startsWith("🔒"),
+      resultsOpened: question.resultsOpened,
+      resultsFinalized: question.resultsFinalized,
+      context: "results",
+    });
   }, [question]);
 
-  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/results?questionId=${questionId}` : "";
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-  const warpcastUrl = `https://warpcast.com/~/compose?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
+  const shareTextWithImage = [shareText, shareImageUrl].filter(Boolean).join("\n");
+
+  const tweetUrl = shareUrl
+    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTextWithImage)}&url=${encodeURIComponent(shareUrl)}`
+    : undefined;
+  const warpcastUrl = shareUrl
+    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(`${shareTextWithImage}\n${shareUrl}`)}`
+    : undefined;
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
-      notification.success("Copied To Clipboard!");
+      if (shareUrl) {
+        await navigator.clipboard.writeText(`${shareTextWithImage}\n${shareUrl}`);
+        notification.success("Copied To Clipboard!");
+      }
     } catch {
       notification.error("Unable to copy link");
     }
@@ -266,14 +287,14 @@ const ResultsContent = () => {
                     </ActionButton>
                   </div>
                   <div className="flex justify-end gap-2 pt-3">
-                    {isPrivate ? (
+                    {isPrivate || !tweetUrl || !warpcastUrl ? (
                       <ActionButton variant="ghost" disabled={!question} onClick={handleCopy}>
                         Copy summary
                       </ActionButton>
                     ) : (
                       <ShareButtons
-                        onShareX={() => window.open(tweetUrl, "_blank")}
-                        onShareFarcaster={() => window.open(warpcastUrl, "_blank")}
+                        onShareX={() => window.open(tweetUrl, "_blank", "noopener,noreferrer")}
+                        onShareFarcaster={() => window.open(warpcastUrl, "_blank", "noopener,noreferrer")}
                         className="justify-end"
                       />
                     )}
