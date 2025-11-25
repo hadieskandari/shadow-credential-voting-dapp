@@ -12,6 +12,7 @@ import { ArrowRight, Clock as ClockIcon, Filter, Globe2, Lock, Search, Sparkles,
 import { useAccount } from "wagmi";
 import { notification } from "~~/utils/helper/notification";
 import { buildShareCopy } from "~~/utils/helper/shareCopy";
+import { questionIdMapper } from "~~/utils/helper/questionIdMapper";
 
 interface QuestionEntry {
   id: number;
@@ -38,7 +39,8 @@ const PollCard = ({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setShareUrl(`${window.location.origin}/vote?questionId=${id}`);
+    const randomId = questionIdMapper.getRandomId(id);
+    setShareUrl(`${window.location.origin}/vote?questionId=${randomId}`);
   }, [id]);
 
   const shareCopy = buildShareCopy({
@@ -145,7 +147,7 @@ const PollCard = ({
             </button>
           )}
           <Link
-            href={`/vote?questionId=${id}`}
+            href={`/vote?questionId=${questionIdMapper.getRandomId(id)}`}
             className="inline-flex items-center gap-2 rounded-full bg-[#ffd208] px-4 py-2 text-xs font-semibold text-black shadow-[0_10px_30px_rgba(255,210,8,0.3)] transition hover:-translate-y-0.5"
           >
             View &amp; vote <ArrowRight className="h-4 w-4" />
@@ -349,7 +351,7 @@ export default function DiscoverPage() {
                   href="/#create"
                   className="inline-flex items-center justify-center rounded-full bg-[#ffd208] px-6 py-3 text-black font-semibold shadow-[0_12px_40px_rgba(255,210,8,0.35)]"
                 >
-                  Launch encrypted tally
+                  Create Encrypted Vote
                 </Link>
               </div>
             </section>

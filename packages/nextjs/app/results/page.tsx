@@ -9,6 +9,7 @@ import { useVoting } from "../hooks/useVoting";
 import { Text, Theme } from "@radix-ui/themes";
 import { notification } from "~~/utils/helper/notification";
 import { buildShareCopy } from "~~/utils/helper/shareCopy";
+import { questionIdMapper } from "~~/utils/helper/questionIdMapper";
 
 const SectionCard = ({
   title,
@@ -72,7 +73,21 @@ const ActionButton = ({
 
 const ResultsContent = () => {
   const params = useSearchParams();
-  const questionId = Number(params.get("questionId"));
+  const questionIdParam = params.get("questionId");
+  let questionId: number = NaN;
+
+  // Decode random ID to numeric ID, or parse directly if numeric
+  if (questionIdParam) {
+    if (questionIdMapper.hasRandomId(questionIdParam)) {
+      const numericId = questionIdMapper.getNumericId(questionIdParam);
+      if (numericId !== null) {
+        questionId = numericId;
+      }
+    } else {
+      questionId = Number(questionIdParam);
+    }
+  }
+
   const { getQuestion, openResults, publishResults } = useVoting();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
@@ -105,7 +120,8 @@ const ResultsContent = () => {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setShareUrl(`${window.location.origin}/results?questionId=${questionId}`);
+    const randomId = questionIdMapper.getRandomId(questionId);
+    setShareUrl(`${window.location.origin}/results?questionId=${randomId}`);
   }, [questionId]);
 
   const decryptedTallies = question?.decryptedTally ?? [0, 0];

@@ -6,6 +6,10 @@ import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/helper/getMetadata";
 
+// Disable static generation for all pages due to client-side Wagmi dependencies
+export const revalidate = false;
+export const dynamic = "force-dynamic";
+
 export const metadata = getMetadata({
   title: "Shadow (powered by Zama)",
   description: "Shadow · powered by Zama FHEVM",
@@ -19,9 +23,9 @@ const DappWrapper = ({ children }: { children: React.ReactNode }) => {
         <Script src="https://cdn.zama.org/relayer-sdk-js/0.3.0-5/relayer-sdk-js.umd.cjs" strategy="beforeInteractive" />
       </head>
       <body>
-        <ThemeProvider enableSystem>
-          <DappWrapperWithProviders>{children}</DappWrapperWithProviders>
-        </ThemeProvider>
+        <DappWrapperWithProviders>
+          <ThemeProvider enableSystem>{children}</ThemeProvider>
+        </DappWrapperWithProviders>
       </body>
     </html>
   );

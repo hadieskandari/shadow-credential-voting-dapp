@@ -10,6 +10,7 @@ import { CalendarClock, Clock3, Copy, Eye, Link2 } from "lucide-react";
 import { useAccount, usePublicClient } from "wagmi";
 import { simpleVotingAbi } from "~~/contracts/abis/simpleVotingAbi";
 import { notification } from "~~/utils/helper/notification";
+import { questionIdMapper } from "~~/utils/helper/questionIdMapper";
 
 interface QuestionSummary {
   id: number;
@@ -199,7 +200,8 @@ export const CreateQuestion = () => {
   };
 
   const copyLink = async (id: number) => {
-    const link = `${shareBase}/vote?questionId=${id}`;
+    const randomId = questionIdMapper.getRandomId(id);
+    const link = `${shareBase}/vote?questionId=${randomId}`;
     try {
       if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(link);
@@ -230,19 +232,6 @@ export const CreateQuestion = () => {
   const handleDeadlineChange = (value: string) => {
     setDeadlineInput(value);
   };
-
-  const openDeadlinePicker = () => {
-    const input = dateInputRef.current;
-    if (!input) return;
-    if (typeof (input as HTMLInputElement & { showPicker?: () => void }).showPicker === "function") {
-      (input as HTMLInputElement & { showPicker?: () => void }).showPicker?.();
-    } else {
-      input.focus();
-      input.click();
-    }
-  };
-
-  const deadlineText = deadlineInput ? new Date(deadlineInput).toLocaleString() : "Pick a date";
 
   return (
     <section className="w-full px-4 pt-12 pb-4" id="create">
@@ -367,11 +356,19 @@ export const CreateQuestion = () => {
                   <div className="space-y-2">
                     <button
                       type="button"
-                      onClick={openDeadlinePicker}
-                      className="flex h-14 w-full items-center justify-between rounded-2xl border border-white/10 bg-black/50 px-4 text-left text-base text-white"
+                      onClick={() => {
+                        const input = dateInputRef.current;
+                        if (!input) return;
+                        if (typeof input.showPicker === "function") {
+                          input.showPicker();
+                        } else {
+                          input.focus();
+                          input.click();
+                        }
+                      }}
+                      className="flex h-14 w-full items-center justify-between rounded-2xl border border-white/10 bg-black/50 px-4 text-left text-base text-white transition hover:border-[#ffd208]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd208]/40"
                     >
-                      <span>{deadlineText}</span>
-                      <Clock3 className="h-4 w-4 text-[#ffd208]" />
+                      <span>{deadlineInput ? new Date(deadlineInput).toLocaleString() : "Pick a date"}</span>
                     </button>
                     <input
                       ref={dateInputRef}
@@ -429,7 +426,8 @@ export const CreateQuestion = () => {
               <div className="grid gap-6 md:grid-cols-2">
                 {visibleQuestions.map((entry, index) => {
                   const status = renderStatusPill(entry);
-                  const link = `${shareBase}/vote?questionId=${entry.id}`;
+                  const randomId = questionIdMapper.getRandomId(entry.id);
+                  const link = `${shareBase}/vote?questionId=${randomId}`;
                   const cover = entry.image || pickFallbackImage(index);
                   const deadlineLabel = entry.deadline
                     ? new Date(entry.deadline * 1000).toLocaleString()

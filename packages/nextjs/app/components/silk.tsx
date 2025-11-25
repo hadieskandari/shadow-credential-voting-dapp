@@ -137,7 +137,22 @@ export const Silk = ({ speed = 5, scale = 1, color = "#f1f1f1", noiseIntensity =
     };
   }, [speed, scale, color, noiseIntensity, rotation]);
 
-  return <div ref={containerRef} className="absolute inset-0 w-full h-full" />;
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 w-full h-full"
+      style={{
+        width: "100vw",
+        height: "100vh",
+        maxHeight: "100vh",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: "hidden",
+      }}
+    />
+  );
 };
 
 export default Silk;

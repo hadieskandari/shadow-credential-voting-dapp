@@ -12,6 +12,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { SHARE_BANNER_IMAGE } from "~~/utils/helper/shareConfig";
 import { buildShareCopy } from "~~/utils/helper/shareCopy";
+import { questionIdMapper } from "~~/utils/helper/questionIdMapper";
 
 interface VotingProps {
   questionId: number;
@@ -118,7 +119,8 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
 
   const handleShare = (platform: "x" | "farcaster") => () => {
     if (typeof window === "undefined") return;
-    const voteUrl = `${window.location.origin}/vote?questionId=${questionId}`;
+    const randomId = questionIdMapper.getRandomId(questionId);
+    const voteUrl = `${window.location.origin}/vote?questionId=${randomId}`;
     const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
     const shareCopy = buildShareCopy({
       prompt: displayQuestion,
@@ -187,7 +189,9 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   };
 
   const getShareUrl = () =>
-    typeof window !== "undefined" ? `${window.location.origin}/vote?questionId=${questionId}` : "";
+    typeof window !== "undefined"
+      ? `${window.location.origin}/vote?questionId=${questionIdMapper.getRandomId(questionId)}`
+      : "";
 
   const handleCopyLink = () => {
     const url = getShareUrl();
@@ -377,7 +381,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           ) : deadlinePassed ? (
             <div className="flex flex-col gap-2 text-center text-gray-400 bg-white/5 border border-white/10 rounded-2xl px-4 py-6">
               <Text size="3" weight="bold">
-                Poll closed
+                Poll Closed
               </Text>
               <Text size="2">Deadline passed; encrypted tally will be revealed once published on-chain.</Text>
             </div>
@@ -401,7 +405,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           ) : (
             <div className="flex flex-col gap-3 text-center rounded-2xl bg-white/5 border border-white/10 px-4 py-4">
               <Text size="3" color="green" weight="bold">
-                ✓ Encrypted vote recorded
+                ✓ Encrypted Vote Recorded
                 {typeof votedFor === "number" ? ` for ${questionData.possibleAnswers[votedFor]}` : ""}
               </Text>
               <Text size="2" color="gray">
@@ -482,7 +486,12 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
             <meta property="og:title" content={shareTitle} />
             <meta property="og:description" content={shareDescription} />
             {absoluteShareImage && <meta property="og:image" content={absoluteShareImage} />}
-            {origin && <meta property="og:url" content={`${origin}/vote?questionId=${questionId}`} />}
+            {origin && (
+              <meta
+                property="og:url"
+                content={`${origin}/vote?questionId=${questionIdMapper.getRandomId(questionId)}`}
+              />
+            )}
             <meta property="twitter:card" content="summary_large_image" />
             <meta property="twitter:title" content={shareTitle} />
             <meta property="twitter:description" content={shareDescription} />
@@ -518,7 +527,12 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           <meta property="og:title" content={shareTitle} />
           <meta property="og:description" content={shareDescription} />
           {absoluteShareImage && <meta property="og:image" content={absoluteShareImage} />}
-          {origin && <meta property="og:url" content={`${origin}/vote?questionId=${questionId}`} />}
+          {origin && (
+            <meta
+              property="og:url"
+              content={`${origin}/vote?questionId=${questionIdMapper.getRandomId(questionId)}`}
+            />
+          )}
           <meta property="twitter:card" content="summary_large_image" />
           <meta property="twitter:title" content={shareTitle} />
           <meta property="twitter:description" content={shareDescription} />

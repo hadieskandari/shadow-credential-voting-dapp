@@ -71,8 +71,8 @@
       "secp256k1",
       "sharp",
       "unrs-resolver",
-      "utf-8-validate",
-      "yarn"
+      "utf-8-validate"
     ]
-  }
+  },
+  "packageManager": "pnpm@9.0.0"
 }

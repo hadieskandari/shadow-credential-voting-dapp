@@ -7,6 +7,7 @@ import Navbar from "../components/Navbar";
 import Voting from "../components/Voting";
 import { Card, Text, Theme } from "@radix-ui/themes";
 import { ArrowDown, ShieldCheck, Stamp, Wallet2 } from "lucide-react";
+import { questionIdMapper } from "~~/utils/helper/questionIdMapper";
 
 const VotePage = () => {
   const [questionId, setQuestionId] = useState<number | null>(null);
@@ -63,9 +64,23 @@ const VotePage = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const id = Number(params.get("questionId"));
-    if (!Number.isNaN(id) && id >= 0) {
-      setQuestionId(id);
+    const randomId = params.get("questionId");
+    
+    if (randomId && questionIdMapper.hasRandomId(randomId)) {
+      const numericId = questionIdMapper.getNumericId(randomId);
+      if (numericId !== null && numericId >= 0) {
+        setQuestionId(numericId);
+      } else {
+        setQuestionId(null);
+      }
+    } else if (!randomId) {
+      // Fallback: support direct numeric IDs for backward compatibility
+      const id = Number(params.get("id"));
+      if (!Number.isNaN(id) && id >= 0) {
+        setQuestionId(id);
+      } else {
+        setQuestionId(null);
+      }
     } else {
       setQuestionId(null);
     }
@@ -75,9 +90,10 @@ const VotePage = () => {
   const renderState = () => {
     if (loading) {
       return (
-        <Card className="bg-black/50 border border-white/10 text-center py-12">
-          <Text size="3">Loading question...</Text>
-        </Card>
+        <div className="flex flex-col items-center justify-center rounded-[30px] border border-white/10 bg-black/40 py-16 text-sm text-[#ffd208] shadow-[0_20px_50px_rgba(0,0,0,0.55)]">
+          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-2 border-white/20 border-t-[#ffd208]" />
+          <p>Loading question… stay tuned.</p>
+        </div>
       );
     }
 
@@ -131,10 +147,10 @@ const VotePage = () => {
                   tallies decrypt with proofs and anchor on-chain.
                 </p>
                 <div className="mt-1 flex w-full flex-col items-center gap-3">
-                  <div className="flex w-full flex-row flex-wrap items-center justify-center gap-3 sm:flex-nowrap">
+                  <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
                     <Link
                       href="/"
-                      className="inline-flex flex-1 min-w-[45%] items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#ffd208] via-[#ffda42] to-[#f5c400] px-5 py-2.5 text-black font-semibold border border-[#ffd208]/60 shadow-[0_14px_30px_rgba(255,210,8,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(255,210,8,0.55)] active:translate-y-0.5 sm:flex-none sm:w-auto"
+                      className="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#ffd208] via-[#ffda42] to-[#f5c400] px-5 py-2.5 text-black font-semibold border border-[#ffd208]/60 shadow-[0_14px_30px_rgba(255,210,8,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(255,210,8,0.55)] active:translate-y-0.5 w-full sm:w-auto"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M12 5v14" />
@@ -144,7 +160,7 @@ const VotePage = () => {
                     </Link>
                     <Link
                       href="/discover"
-                      className="inline-flex flex-1 min-w-[45%] items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#0b0b0b] via-[#131313] to-[#0b0b0b] px-5 py-2.5 text-white font-semibold border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(0,0,0,0.7)] active:translate-y-0.5 sm:flex-none sm:w-auto"
+                      className="inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#0b0b0b] via-[#131313] to-[#0b0b0b] px-5 py-2.5 text-white font-semibold border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(0,0,0,0.7)] active:translate-y-0.5 w-full sm:w-auto"
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <circle cx="11.5" cy="11.5" r="7.5" />
