@@ -35,12 +35,10 @@ const PollCard = ({
   const total = (data.decryptedTally ?? []).reduce((acc, v) => acc + v, 0);
   const creatorAvatar = data.image?.trim() ? data.image : "/shadow-logo.png";
   const [shareUrl, setShareUrl] = useState("");
-  const [origin, setOrigin] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     setShareUrl(`${window.location.origin}/vote?questionId=${id}`);
-    setOrigin(window.location.origin);
   }, [id]);
 
   const shareCopy = buildShareCopy({
@@ -54,9 +52,7 @@ const PollCard = ({
 
   const handleShare = (platform: "x" | "farcaster") => () => {
     if (!shareUrl) return;
-    const bannerUrl = origin ? `${origin}/shadow-banner.jpg` : "";
-    const payload = [shareCopy, bannerUrl].filter(Boolean).join("\n");
-    const encodedText = encodeURIComponent(payload);
+    const encodedText = encodeURIComponent(shareCopy);
     const encodedUrl = encodeURIComponent(shareUrl);
     const link =
       platform === "x"
@@ -91,7 +87,7 @@ const PollCard = ({
 
       <div className="absolute right-3 top-3 z-20">{shareControls}</div>
 
-      <div className="relative flex flex-col gap-3 pb-3 pt-6 sm:flex-row sm:items-start sm:pt-3">
+      <div className="relative flex flex-col gap-3 pb-3 sm:flex-row sm:items-start sm:pt-3">
         <img
           src={creatorAvatar}
           alt="creator avatar"

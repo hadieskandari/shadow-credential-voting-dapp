@@ -10,6 +10,7 @@ import VoteStats from "./VoteStats";
 import { Box, Button, Text } from "@radix-ui/themes";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
+import { SHARE_BANNER_IMAGE } from "~~/utils/helper/shareConfig";
 import { buildShareCopy } from "~~/utils/helper/shareCopy";
 
 interface VotingProps {
@@ -128,9 +129,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
       userHasVoted,
       context: "voting",
     });
-    const bannerUrl = `${window.location.origin}/shadow-banner.jpg`;
-    const payload = [shareCopy, bannerUrl].filter(Boolean).join("\n");
-    const encodedText = encodeURIComponent(payload);
+    const encodedText = encodeURIComponent(shareCopy);
     const encodedUrl = encodeURIComponent(voteUrl);
     const link =
       platform === "x"
@@ -146,9 +145,13 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
   const displayQuestion = questionData ? questionData.question.replace(/^🔒\s*/, "") : "";
   const featureImage = questionData?.image?.trim() ? questionData.image : fallbackImage;
   const creatorAvatar = questionData?.image?.trim() ? questionData.image : "/shadow-logo.png";
-  const shareImagePath = questionData?.image?.trim() ? questionData.image : "/shadow-banner.jpg";
-  const absoluteShareImage =
-    shareImagePath && shareImagePath.startsWith("http") ? shareImagePath : origin ? `${origin}${shareImagePath}` : "";
+  const shareImagePath =
+    questionData?.image?.trim() && questionData.image.startsWith("http")
+      ? questionData.image
+      : questionData?.image?.trim() && origin
+        ? `${origin}${questionData.image}`
+        : SHARE_BANNER_IMAGE;
+  const absoluteShareImage = shareImagePath || SHARE_BANNER_IMAGE;
   const shareTitle = `Vote on "${displayQuestion}" | Shadow`;
   const shareDescription = questionData.resultsFinalized
     ? "Clear tallies published with FHE proofs."
@@ -206,7 +209,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
       />
 
       <div className="relative flex flex-col gap-5">
-        <div className="absolute right-2 top-2 flex justify-end">
+        <div className="absolute right-0 top-1 flex justify-end">
           {!isPrivatePoll ? (
             <ShareButtons onShareX={handleShare("x")} onShareFarcaster={handleShare("farcaster")} />
           ) : (

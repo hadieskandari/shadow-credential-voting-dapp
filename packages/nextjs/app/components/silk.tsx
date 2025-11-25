@@ -100,9 +100,9 @@ export const Silk = ({ speed = 5, scale = 1, color = "#f1f1f1", noiseIntensity =
     const resize = () => {
       if (!containerRef.current) return;
       const width = window.innerWidth;
-      const height = Math.max(window.innerHeight, document.documentElement.scrollHeight);
-      containerRef.current.style.width = `${width}px`;
-      containerRef.current.style.height = `${height}px`;
+      const height = window.innerHeight;
+      containerRef.current.style.width = "100%";
+      containerRef.current.style.height = "100%";
       renderer.setSize(width, height);
     };
 
@@ -117,7 +117,6 @@ export const Silk = ({ speed = 5, scale = 1, color = "#f1f1f1", noiseIntensity =
 
     resize();
     window.addEventListener("resize", resize);
-    window.addEventListener("scroll", resize, { passive: true });
     const resizeObserver =
       typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(() => {
@@ -129,7 +128,6 @@ export const Silk = ({ speed = 5, scale = 1, color = "#f1f1f1", noiseIntensity =
 
     return () => {
       window.removeEventListener("resize", resize);
-      window.removeEventListener("scroll", resize);
       resizeObserver?.disconnect();
       cancelAnimationFrame(animationFrame);
       geometry.dispose();
@@ -139,7 +137,7 @@ export const Silk = ({ speed = 5, scale = 1, color = "#f1f1f1", noiseIntensity =
     };
   }, [speed, scale, color, noiseIntensity, rotation]);
 
-  return <div ref={containerRef} className="absolute inset-0" />;
+  return <div ref={containerRef} className="absolute inset-0 w-full h-full" />;
 };
 
 export default Silk;

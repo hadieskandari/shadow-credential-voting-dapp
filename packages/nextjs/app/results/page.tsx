@@ -80,7 +80,6 @@ const ResultsContent = () => {
   const [revealLoading, setRevealLoading] = useState(false);
   const [publishLoading, setPublishLoading] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
-  const [shareImageUrl, setShareImageUrl] = useState("");
 
   const loadQuestion = useCallback(async () => {
     if (Number.isNaN(questionId)) {
@@ -107,7 +106,6 @@ const ResultsContent = () => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     setShareUrl(`${window.location.origin}/results?questionId=${questionId}`);
-    setShareImageUrl(`${window.location.origin}/shadow-banner.jpg`);
   }, [questionId]);
 
   const decryptedTallies = question?.decryptedTally ?? [0, 0];
@@ -135,19 +133,17 @@ const ResultsContent = () => {
     });
   }, [question]);
 
-  const shareTextWithImage = [shareText, shareImageUrl].filter(Boolean).join("\n");
-
   const tweetUrl = shareUrl
-    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTextWithImage)}&url=${encodeURIComponent(shareUrl)}`
+    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
     : undefined;
   const warpcastUrl = shareUrl
-    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(`${shareTextWithImage}\n${shareUrl}`)}`
+    ? `https://warpcast.com/~/compose?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`
     : undefined;
 
   const handleCopy = async () => {
     try {
       if (shareUrl) {
-        await navigator.clipboard.writeText(`${shareTextWithImage}\n${shareUrl}`);
+        await navigator.clipboard.writeText(`${shareText}\n${shareUrl}`);
         notification.success("Copied To Clipboard!");
       }
     } catch {

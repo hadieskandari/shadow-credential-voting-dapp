@@ -130,27 +130,29 @@ const VotePage = () => {
                   Ballots encrypt in-browser with Zama’s FHE runtime. Votes stay opaque end-to-end; only after reveal do
                   tallies decrypt with proofs and anchor on-chain.
                 </p>
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-1">
-                  <Link
-                    href="/"
-                    className="inline-flex items-center gap-3 rounded-full bg-gradient-to-br from-[#ffd208] via-[#ffda42] to-[#f5c400] px-5 py-2.5 text-black font-semibold border border-[#ffd208]/60 shadow-[0_14px_30px_rgba(255,210,8,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(255,210,8,0.55)] active:translate-y-0.5"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 5v14" />
-                      <path d="M5 12h14" />
-                    </svg>
-                    Create a Vote
-                  </Link>
-                  <Link
-                    href="/discover"
-                    className="inline-flex items-center gap-3 rounded-full bg-gradient-to-br from-[#0b0b0b] via-[#131313] to-[#0b0b0b] px-5 py-2.5 text-white font-semibold border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(0,0,0,0.7)] active:translate-y-0.5"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="11.5" cy="11.5" r="7.5" />
-                      <path d="m16 16 4 4" />
-                    </svg>
-                    Discover Polls
-                  </Link>
+                <div className="mt-1 flex w-full flex-col items-center gap-3">
+                  <div className="flex w-full flex-row flex-wrap items-center justify-center gap-3 sm:flex-nowrap">
+                    <Link
+                      href="/"
+                      className="inline-flex flex-1 min-w-[45%] items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#ffd208] via-[#ffda42] to-[#f5c400] px-5 py-2.5 text-black font-semibold border border-[#ffd208]/60 shadow-[0_14px_30px_rgba(255,210,8,0.45)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(255,210,8,0.55)] active:translate-y-0.5 sm:flex-none sm:w-auto"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                      </svg>
+                      Create a Vote
+                    </Link>
+                    <Link
+                      href="/discover"
+                      className="inline-flex flex-1 min-w-[45%] items-center justify-center gap-3 rounded-full bg-gradient-to-br from-[#0b0b0b] via-[#131313] to-[#0b0b0b] px-5 py-2.5 text-white font-semibold border border-white/15 shadow-[0_12px_32px_rgba(0,0,0,0.55)] transition hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(0,0,0,0.7)] active:translate-y-0.5 sm:flex-none sm:w-auto"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="11.5" cy="11.5" r="7.5" />
+                        <path d="m16 16 4 4" />
+                      </svg>
+                      Discover Polls
+                    </Link>
+                  </div>
                   <button
                     type="button"
                     onClick={openGuide}

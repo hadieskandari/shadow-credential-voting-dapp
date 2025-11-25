@@ -245,7 +245,7 @@ export const CreateQuestion = () => {
   const deadlineText = deadlineInput ? new Date(deadlineInput).toLocaleString() : "Pick a date";
 
   return (
-    <section className="w-full px-0 pt-12 pb-4" id="create">
+    <section className="w-full px-4 pt-12 pb-4" id="create">
       <div className="relative mx-auto w-full max-w-6xl space-y-10 overflow-hidden rounded-[44px] border border-white/10 bg-[#050505]/95 p-6 sm:p-10 shadow-[0_40px_120px_rgba(0,0,0,0.65)]">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
