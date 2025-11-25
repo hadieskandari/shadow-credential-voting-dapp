@@ -162,11 +162,11 @@ const VotePage = () => {
               </div>
             </div>
           </section>
-          <section className="w-full max-w-7xl mt-10 mb-16">{renderState()}</section>
+          <section className="w-full max-w-7xl mt-2 mb-16 mx-0">{renderState()}</section>
         </div>
       </div>
       {guideMounted && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-0">
           <div
             className={`absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${showGuide ? "opacity-100" : "opacity-0"}`}
             onClick={closeGuide}

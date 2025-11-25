@@ -205,7 +205,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
         }}
       />
 
-      <div className="relative flex flex-col gap-5 pt-8 md:gap-6 md:pt-0">
+      <div className="relative flex flex-col gap-5">
         <div className="absolute right-2 top-2 flex justify-end">
           {!isPrivatePoll ? (
             <ShareButtons onShareX={handleShare("x")} onShareFarcaster={handleShare("farcaster")} />
@@ -214,7 +214,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           )}
         </div>
         <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:pr-[9.5rem]">
-          <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
+          <div className="h-12 w-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden">
             <img
               src={featureImage}
               alt="topic"
@@ -270,19 +270,19 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 sm:grid-cols-3">
-          <div className="flex flex-col gap-1">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Deadline</p>
-            <p className="text-sm text-white/90">{new Date(questionData.deadline * 1000).toLocaleString()}</p>
+        <div className="grid grid-cols-1 gap-0 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 sm:grid-cols-3">
+          <div className="flex flex-col gap-0">
+            <p className="text-[10px] my-0.5 uppercase tracking-[0.4em] text-gray-400">Deadline</p>
+            <p className="text-sm  text-white/90">{new Date(questionData.deadline * 1000).toLocaleString()}</p>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Votes</p>
+            <p className="text-[10px] my-0.5 uppercase tracking-[0.4em] text-gray-400">Votes</p>
             <p className="text-lg font-semibold text-white">
               {totalVotes || (questionData.resultsOpened ? "Decrypt" : "—")}
             </p>
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-[10px] uppercase tracking-[0.4em] text-gray-400">Status</p>
+            <p className="text-[10px] my-0.5 uppercase tracking-[0.4em] text-gray-400">Status</p>
             <p
               className={`text-sm ${
                 statusLabel === "Published"
@@ -486,7 +486,7 @@ export const Voting = ({ questionId, primary = true }: VotingProps) => {
             {absoluteShareImage && <meta property="twitter:image" content={absoluteShareImage} />}
           </Head>
         )}
-        <div className="w-full px-4 my-8 flex justify-center">
+        <div className="w-full px-0 my-8 flex justify-center">
           <div className="w-full max-w-6xl">
             <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
               <Box className="w-full">{cardBody}</Box>

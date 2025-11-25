@@ -171,7 +171,7 @@ const ResultsContent = () => {
           <div className="navbar mb-12 w-full max-w-7xl">
             <Navbar />
           </div>
-          <div className="w-full max-w-7xl space-y-8 pb-16">
+          <div className="w-full max-w-6xl space-y-8 pb-16">
             <section className="rounded-[40px] border border-white/10 bg-black/70 p-10 text-center text-white space-y-6 shadow-[0_30px_100px_rgba(0,0,0,0.6)]">
               <p className="text-xs uppercase tracking-[0.45em] text-[#ffd208]/80">Reveal console</p>
               <h1 className="text-4xl md:text-5xl font-semibold leading-tight">

@@ -6,7 +6,7 @@ import { useVoting } from "../hooks/useVoting";
 import { GlowButton } from "@/components/ui/glow-button";
 import { Input } from "@/components/ui/input";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { CalendarClock, Clock3, Copy, Link2, Share2 } from "lucide-react";
+import { CalendarClock, Clock3, Copy, Eye, Link2 } from "lucide-react";
 import { useAccount, usePublicClient } from "wagmi";
 import { simpleVotingAbi } from "~~/contracts/abis/simpleVotingAbi";
 import { notification } from "~~/utils/helper/notification";
@@ -56,6 +56,7 @@ export const CreateQuestion = () => {
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState(CARD_BATCH_SIZE);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
 
   const resolvedCount = useMemo(() => questionsCount ?? 0, [questionsCount]);
 
@@ -226,8 +227,25 @@ export const CreateQuestion = () => {
     return { label: "Live", className: "bg-[#ffd208]/20 text-[#ffd208] border border-[#ffd208]/40" };
   };
 
+  const handleDeadlineChange = (value: string) => {
+    setDeadlineInput(value);
+  };
+
+  const openDeadlinePicker = () => {
+    const input = dateInputRef.current;
+    if (!input) return;
+    if (typeof (input as HTMLInputElement & { showPicker?: () => void }).showPicker === "function") {
+      (input as HTMLInputElement & { showPicker?: () => void }).showPicker?.();
+    } else {
+      input.focus();
+      input.click();
+    }
+  };
+
+  const deadlineText = deadlineInput ? new Date(deadlineInput).toLocaleString() : "Pick a date";
+
   return (
-    <section className="w-full px-4 py-12 sm:px-6" id="create">
+    <section className="w-full px-0 pt-12 pb-4" id="create">
       <div className="relative mx-auto w-full max-w-6xl space-y-10 overflow-hidden rounded-[44px] border border-white/10 bg-[#050505]/95 p-6 sm:p-10 shadow-[0_40px_120px_rgba(0,0,0,0.65)]">
         <div
           className="pointer-events-none absolute inset-0 opacity-40"
@@ -341,35 +359,47 @@ export const CreateQuestion = () => {
                 ))}
               </div>
 
-              <label className="space-y-2 w-full">
-                <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">
-                  Image URL (optional)
-                </span>
-                <Input
-                  type="url"
-                  placeholder="https://"
-                  value={image}
-                  onChange={event => setImage(event.target.value)}
-                />
-              </label>
-
-              <label className="space-y-2 w-full">
-                <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">Voting deadline</span>
-                <div className="space-y-2">
+              <div className="flex flex-col gap-4 sm:flex-row">
+                <label className="space-y-2 w-full sm:w-1/2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">
+                    Voting deadline
+                  </span>
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={openDeadlinePicker}
+                      className="flex h-14 w-full items-center justify-between rounded-2xl border border-white/10 bg-black/50 px-4 text-left text-base text-white"
+                    >
+                      <span>{deadlineText}</span>
+                      <Clock3 className="h-4 w-4 text-[#ffd208]" />
+                    </button>
+                    <input
+                      ref={dateInputRef}
+                      type="datetime-local"
+                      min={soonestDeadlineInput}
+                      value={deadlineInput}
+                      onChange={event => handleDeadlineChange(event.target.value)}
+                      className="sr-only"
+                      required
+                    />
+                    <p className="flex items-center gap-2 text-xs text-gray-400">
+                      <Clock3 className="h-4 w-4 text-[#ffd208]" />
+                      Pick any time at least 15 minutes in the future. We convert it to on-chain seconds automatically.
+                    </p>
+                  </div>
+                </label>
+                <label className="space-y-2 w-full sm:w-1/2">
+                  <span className="text-xs font-semibold uppercase tracking-[0.35em] text-gray-400">
+                    Image URL (optional)
+                  </span>
                   <Input
-                    type="datetime-local"
-                    min={soonestDeadlineInput}
-                    value={deadlineInput}
-                    onChange={event => setDeadlineInput(event.target.value)}
-                    className="w-full"
-                    required
+                    type="url"
+                    placeholder="https://"
+                    value={image}
+                    onChange={event => setImage(event.target.value)}
                   />
-                  <p className="flex items-center gap-2 text-xs text-gray-400">
-                    <Clock3 className="h-4 w-4 text-[#ffd208]" />
-                    Pick any time at least 15 minutes in the future. We convert it to on-chain seconds automatically.
-                  </p>
-                </div>
-              </label>
+                </label>
+              </div>
             </div>
 
             <div className="flex justify-center">
@@ -438,12 +468,12 @@ export const CreateQuestion = () => {
                           </span>
                         </div>
 
-                        <div className="flex w-full flex-row gap-2 flex-nowrap">
+                        <div className="flex w-full flex-row gap-2">
                           <GlowButton
                             type="button"
                             onClick={() => copyLink(entry.id)}
                             fullWidth={false}
-                            className="flex flex-1 min-w-[45%] items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
+                            className="flex flex-1 items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
                           >
                             <Copy className="h-4 w-4" />
                             <span className="hidden sm:inline">
@@ -454,12 +484,11 @@ export const CreateQuestion = () => {
                           <GlowButton
                             type="button"
                             fullWidth={false}
-                            className="flex flex-1 min-w-[45%] items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
+                            className="flex flex-1 items-center justify-center gap-2 px-3 py-2 text-xs sm:text-sm"
                             onClick={() => window.open(link, "_blank")}
                           >
-                            <Share2 className="h-4 w-4" />
-                            <span className="hidden sm:inline">Share preview</span>
-                            <span className="sm:hidden">Share</span>
+                            <Eye className="h-4 w-4" />
+                            <span>View</span>
                           </GlowButton>
                         </div>
                       </div>
