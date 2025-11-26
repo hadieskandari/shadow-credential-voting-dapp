@@ -354,31 +354,19 @@ export const CreateQuestion = () => {
                     Voting deadline
                   </span>
                   <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const input = dateInputRef.current;
-                        if (!input) return;
-                        if (typeof input.showPicker === "function") {
-                          input.showPicker();
-                        } else {
-                          input.focus();
-                          input.click();
-                        }
-                      }}
-                      className="flex h-14 w-full items-center justify-between rounded-2xl border border-white/10 bg-black/50 px-4 text-left text-base text-white transition hover:border-[#ffd208]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd208]/40"
-                    >
-                      <span>{deadlineInput ? new Date(deadlineInput).toLocaleString() : "Pick a date"}</span>
-                    </button>
-                    <input
-                      ref={dateInputRef}
-                      type="datetime-local"
-                      min={soonestDeadlineInput}
-                      value={deadlineInput}
-                      onChange={event => handleDeadlineChange(event.target.value)}
-                      className="sr-only"
-                      required
-                    />
+                    <div className="relative">
+                      <input
+                        ref={dateInputRef}
+                        type="datetime-local"
+                        min={soonestDeadlineInput}
+                        value={deadlineInput}
+                        onChange={event => handleDeadlineChange(event.target.value)}
+                        placeholder="Pick a date"
+                        className="flex h-14 w-full items-center rounded-2xl border border-white/10 bg-black/50 px-4 text-base text-white transition hover:border-[#ffd208]/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd208]/40 appearance-none"
+                        required
+                      />
+                      <Clock3 className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#ffd208]" />
+                    </div>
                     <p className="flex items-center gap-2 text-xs text-gray-400">
                       <Clock3 className="h-4 w-4 text-[#ffd208]" />
                       Pick any time at least 15 minutes in the future. We convert it to on-chain seconds automatically.
